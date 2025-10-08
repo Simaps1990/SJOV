@@ -143,17 +143,6 @@ onClick={() => setFullscreenIndex(i)}
 
 
 
-            {!event.isPast && (
-              <div className="mt-8 p-6 bg-primary-50 rounded-lg border border-primary-100">
-                <h3 className="font-heading font-semibold text-xl mb-2">Informations pratiques</h3>
-                <p className="mb-4">
-                  Pour participer à cet événement, merci de vous inscrire à l'avance par email ou par téléphone.
-                </p>
-                <Link to="/contact" className="btn-primary">
-                  Nous contacter pour s'inscrire
-                </Link>
-              </div>
-            )}
           </div>
         </div>
       </div>
