@@ -242,8 +242,7 @@ const ApplyPage: React.FC = () => {
               name="motivations"
               value={formData.motivations}
               onChange={handleChange}
-              className={`w-full border px-3 py-2 rounded ${errors.motivations ? 'border-red-500' : ''}`}
-              required
+              className={`w-full border px-3 py-2 rounded ${errors.motivations ? 'border-red-500 border-2' : 'border-gray-300'}`}
             />
             {errors.motivations && <p className="text-red-500 text-sm mt-1">{errors.motivations}</p>}
           </div>
@@ -282,8 +281,7 @@ const inputField = ({ label, name, value, onChange, type = 'text', required, err
       name={name}
       value={value}
       onChange={onChange}
-      className={`w-full border px-3 py-2 rounded ${error ? 'border-red-500' : ''}`}
-      required={required}
+      className={`w-full border px-3 py-2 rounded ${error ? 'border-red-500 border-2' : 'border-gray-300'}`}
     />
     {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
   </div>
@@ -306,8 +304,7 @@ const selectField = ({ label, name, value, options, onChange, error }: SelectFie
         name={name}
         value={value}
         onChange={onChange}
-        className={`w-full border px-3 py-2 rounded ${error ? 'border-red-500' : ''}`}
-        required
+        className={`w-full border px-3 py-2 rounded ${error ? 'border-red-500 border-2' : 'border-gray-300'}`}
       >
         {options.map(([val, label]) => (
           <option key={val} value={val}>{label}</option>
