@@ -78,13 +78,17 @@ const ApplyPage: React.FC = () => {
       { name: 'engagementcharte', label: 'L\'engagement à la charte' },
       { name: 'engagementreglement', label: 'L\'engagement au règlement' },
       { name: 'engagementlieupublic', label: 'L\'engagement lieu public' },
-      { name: 'motivations', label: 'Les motivations' },
+      { name: 'motivations', label: 'Les motivations sont' },
     ];
 
     for (const champ of champsObligatoires) {
       const valeur = formData[champ.name as keyof typeof formData];
       if (!valeur || valeur.trim() === '') {
-        newErrors[champ.name] = `${champ.label} est obligatoire`;
+        if (champ.name === 'motivations') {
+          newErrors[champ.name] = `${champ.label} obligatoires`;
+        } else {
+          newErrors[champ.name] = `${champ.label} est obligatoire`;
+        }
       }
     }
 
