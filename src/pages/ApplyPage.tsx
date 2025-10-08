@@ -18,6 +18,7 @@ const ApplyPage: React.FC = () => {
     inspectionconnu: '',
     engagementcharte: '',
     engagementreglement: '',
+    engagementlieupublic: '',
     motivations: '',
   });
 
@@ -39,7 +40,7 @@ const ApplyPage: React.FC = () => {
       'nom', 'adresse', 'ville', 'telephoneportable', 'email', 
       'taillejardin', 'experience', 'budgetconnu', 
       'tempsdisponible', 'inspectionconnu', 
-      'engagementcharte', 'engagementreglement', 'motivations'
+      'engagementcharte', 'engagementreglement', 'engagementlieupublic', 'motivations'
     ];
     
     // Afficher les valeurs actuelles pour débogage
@@ -98,6 +99,7 @@ const ApplyPage: React.FC = () => {
       inspectionconnu: '',
       engagementcharte: '',
       engagementreglement: '',
+      engagementlieupublic: '',
       motivations: '',
     });
   };
@@ -179,6 +181,7 @@ const ApplyPage: React.FC = () => {
           {selectOuiNon({ label: "Savez-vous que les jardins sont inspectés tous les mois, si votre jardin n'est pas entretenu vous recevrez deux avertissements  avant d'être exclu ? Vous ne pourrez pas prétendre à récupérer la somme laissée pour votre cabanon.", name: "inspectionconnu", value: formData.inspectionconnu, onChange: handleChange })}
           {selectOuiNon({ label: "Vous engagez-vous lors de la prise d'un jardin à signer la charte de l'association pour le respect de l'environnement (sol, ressource en eau et la biodiversité ) .", name: "engagementcharte", value: formData.engagementcharte, onChange: handleChange })}
           {selectOuiNon({ label: "Vous engagez-vous lors de la prise d'un jardin à signer le règlement intérieur contenant entre autres le respect de la tranquillité.  ", name: "engagementreglement", value: formData.engagementreglement, onChange: handleChange })}
+          {selectOuiNon({ label: "Vous engagez-vous à respecter le fait que le jardin est lieux public où toute manifestation religieuse (prière) est interdite ?", name: "engagementlieupublic", value: formData.engagementlieupublic, onChange: handleChange })}
 
           <div>
             <label className="block font-medium text-gray-700 mb-1">En quelques mots quelles sont vos motivations pour obtenir un jardin *</label>

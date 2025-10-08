@@ -18,6 +18,7 @@ type Demande = {
   inspectionconnu: string;
   engagementcharte: string;
   engagementreglement: string;
+  engagementlieupublic: string;
   motivations: string;
   date: string;
   processed: boolean;
@@ -140,6 +141,7 @@ setDemandes((prev) => {
   <p><strong>Inspection mensuelle acceptée :</strong> {demande.inspectionconnu}</p>
   <p><strong>Engagement charte :</strong> {demande.engagementcharte}</p>
   <p><strong>Engagement règlement :</strong> {demande.engagementreglement}</p>
+  <p><strong>Engagement lieu public (pas de manifestation religieuse) :</strong> {demande.engagementlieupublic}</p>
   <p><strong>Motivations :</strong> {demande.motivations}</p>
 </div>
 
