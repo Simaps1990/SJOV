@@ -54,7 +54,7 @@ const currentPath = location.pathname;
   onClick={() => { window.location.href = to; }}
 className={`text-sm font-medium transition ${
   currentPath === to
-    ? 'text-green-600'
+    ? 'text-primary-600'
     : 'text-neutral-700 hover:text-primary-600'
 }`}
 >
@@ -105,7 +105,7 @@ className={`text-sm font-medium transition ${
   onClick={() => { window.location.href = to; setMobileOpen(false); }}
   className={`text-sm font-medium px-3 py-1.5 rounded transition ${
     currentPath === to
-      ? 'bg-green-600 text-white'
+      ? 'bg-primary-600 text-white'
       : 'text-neutral-700 hover:text-primary-600'
   }`}
 >

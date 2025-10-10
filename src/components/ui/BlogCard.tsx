@@ -9,6 +9,26 @@ interface BlogCardProps {
   isFeature?: boolean;
 }
 
+// Fonction pour extraire le texte brut du HTML et créer un extrait
+const getTextExcerpt = (html: string, maxLength: number = 150): string => {
+  // Créer un élément temporaire pour parser le HTML
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  
+  // Extraire le texte brut
+  const text = temp.textContent || temp.innerText || '';
+  
+  // Nettoyer les espaces multiples et retours à la ligne
+  const cleanText = text.replace(/\s+/g, ' ').trim();
+  
+  // Tronquer et ajouter des points de suspension
+  if (cleanText.length > maxLength) {
+    return cleanText.substring(0, maxLength).trim() + '...';
+  }
+  
+  return cleanText;
+};
+
 const BlogCard: React.FC<BlogCardProps> = ({ post, isFeature = false }) => {
   return (
     <article
@@ -57,6 +77,11 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, isFeature = false }) => {
               {post.title}
             </Link>
           </h3>
+          
+          {/* Extrait du contenu */}
+          <p className="text-neutral-600 text-sm leading-relaxed">
+            {getTextExcerpt(post.content)}
+          </p>
         </div>
 
         <div className="mt-auto flex justify-end">

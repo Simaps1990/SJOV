@@ -270,7 +270,7 @@ return (
           </Link>
           <Link
             to="/contact"
-            className="btn border-2 border-white text-white hover:bg-primary-600"
+            className="btn border-2 border-white text-white hover:bg-white hover:text-primary-700 hover:border-white"
           >
             Nous contacter
           </Link>

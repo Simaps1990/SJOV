@@ -166,9 +166,13 @@ const ApplyPage: React.FC = () => {
           description="Postulez pour obtenir un jardin partagé à la SJOV (Société des Jardins Ouvriers de Villeurbanne), association de bénévoles passionnés depuis 1936. Formulaire de demande pour cultiver votre propre parcelle dans nos jardins familiaux à Villeurbanne (69100) en région Rhône-Alpes."
           keywords="postuler jardin, demande jardin partagé, SJOV, Société des Jardins Ouvriers de Villeurbanne, jardins familiaux, Villeurbanne, 69100, parcelle jardinage, candidature jardin, Rhône-Alpes, Lyon, Métropole de Lyon, Auvergne-Rhône-Alpes, bénévolat, demande adhésion, formulaire candidature, obtenir parcelle, jardins ouvriers, devenir jardinier, attribution jardin, liste attente jardin, jardins collectifs, jardins urbains, cultiver potager, jardinage écologique, jardinage urbain, jardinage familial, parcelle cultivable, terrain jardinage, conditions attribution, engagement associatif, charte jardinier, règlement intérieur"
         />
-        <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg mb-10">
-          <h1 className="text-2xl font-semibold text-green-800 mb-4">Demande envoyée</h1>
-          <p>Merci pour votre candidature. Nous vous contacterons prochainement.</p>
+        <div className="pb-16">
+          <div className="container-custom">
+            <div className="p-6 bg-white shadow-md rounded-lg">
+              <h1 className="text-2xl font-semibold text-green-800 mb-4">Demande envoyée</h1>
+              <p>Merci pour votre candidature. Nous vous contacterons prochainement.</p>
+            </div>
+          </div>
         </div>
       </>
     );
@@ -181,9 +185,15 @@ const ApplyPage: React.FC = () => {
         description="Devenez membre de notre association de bénévoles et obtenez un jardin partagé à Villeurbanne ou Vaulx-en-Velin. La SJOV vous accompagne depuis 1936 dans votre projet de jardinage urbain en Rhône-Alpes."
         keywords="postuler jardin Villeurbanne, jardin partagé Vaulx-en-Velin, association bénévole jardinage, SJOV, Société des Jardins Ouvriers, 69100, parcelle jardinage, candidature jardin, Rhône-Alpes, Lyon, bénévolat, jardins familiaux, jardins collectifs, jardins urbains"
       />
-      <div className="max-w-3xl mx-auto p-6 bg-white shadow-md rounded-lg mb-10">
-        <h1 className="text-2xl font-semibold text-green-800 mb-6">Postuler pour un jardin</h1>
-        <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="pb-16">
+        <div className="container-custom">
+          <h1 className="font-heading font-bold text-4xl mb-2">Postuler pour un jardin</h1>
+          <p className="text-neutral-600 text-lg mb-8">
+            Remplissez ce formulaire pour faire une demande d'attribution de parcelle.
+          </p>
+
+          <div className="p-6 bg-white shadow-md rounded-lg">
+            <form onSubmit={handleSubmit} className="space-y-5">
           {inputField({ label: "Nom et prénom", name: "nom", value: formData.nom, onChange: handleChange, required: true, error: errors.nom })}
           {inputField({ label: "Adresse complète", name: "adresse", value: formData.adresse, onChange: handleChange, required: true, error: errors.adresse })}
           {selectField({
@@ -257,7 +267,9 @@ const ApplyPage: React.FC = () => {
           >
             Envoyer la demande
           </button>
-        </form>
+            </form>
+          </div>
+        </div>
       </div>
     </>
   );

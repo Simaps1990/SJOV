@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useContent } from '../../context/ContentContext';
 import SuccessModal from '../../components/SuccessModal.tsx';
+import RichTextEditor from '../../components/RichTextEditor';
 
 const AdminSettingsPage: React.FC = () => {
 const { associationContent, updateAssociationContent } = useContent();
@@ -20,10 +21,6 @@ const [adresse, setAdresse] = useState(associationContent.adresse || '');
 const [telephone, setTelephone] = useState(associationContent.telephone || '');
 const [email, setEmail] = useState(associationContent.email || '');
 const [horaires, setHoraires] = useState(associationContent.horaires || '');
-//const inputRefs = React.useRef<HTMLInputElement[]>([]);
-
-//const imagesAssociation = localContent.imagesAssociation || [null, null, null];
-
 
 const saveAssociationContent = async () => {
 const updated = {
@@ -150,35 +147,6 @@ if (refreshed !== undefined) {    setLocalContent(refreshed);
 
 
 
-  const getSelectedLinkHref = (): string | null => {
-    const selection = window.getSelection();
-    if (!selection || selection.rangeCount === 0) return null;
-
-    let container: Node | null = selection.getRangeAt(0).commonAncestorContainer;
-    if (container.nodeType === 3) container = container.parentNode;
-    if (!container) return null;
-
-    let el: HTMLElement | null = container as HTMLElement;
-    while (el && el.tagName !== 'A') {
-      el = el.parentElement;
-    }
-    if (el && el.tagName === 'A') return el.getAttribute('href');
-    return null;
-  };
-
-
-  const handleFontSizeChange = (size: string) => {
-    if (!editorRef.current) return;
-    document.execCommand('fontSize', false, '7');
-
-    const fonts = editorRef.current.querySelectorAll('font[size="7"]');
-    fonts.forEach((font) => {
-      const span = document.createElement('span');
-      span.style.fontSize = size;
-      span.innerHTML = font.innerHTML;
-      font.parentNode?.replaceChild(span, font);
-    });
-  };
 
 const saveParcelles = async () => {
 const occupees = parseInt((localContent.parcellesOccupees ?? 0).toString(), 10);
@@ -205,12 +173,10 @@ const totales = parseInt((localContent.parcellesTotal ?? 0).toString(), 10);
 
 
 
-  const editorRef = React.useRef<HTMLDivElement>(null);
 useEffect(() => {
   if (
     associationContent &&
-    !hasInitializedContent.current &&
-    editorRef.current
+    !hasInitializedContent.current
   ) {
     setLocalContent({
       id: associationContent.id,
@@ -238,10 +204,10 @@ setAssociationImagePreviews(associationContent.imagesAssociation || [null, null,
     setEmail(associationContent.email || '');
     setHoraires(associationContent.horaires || '');
 
-    editorRef.current.innerHTML = associationContent.contentAssociation || '';
+    setContentAssociation(associationContent.contentAssociation || '');
     hasInitializedContent.current = true;
   }
-}, [associationContent, editorRef.current]);
+}, [associationContent]);
 
 
 
@@ -249,33 +215,11 @@ const hasInitializedContent = React.useRef(false);
 
 
 
+return (
+  <div className="space-y-6">
+    <h1 className="text-3xl font-bold text-gray-800">Paramètres</h1>
 
-
-
-  const handleToolbarClick = (command: string, value?: string) => {
-    if (command === 'createLink') {
-      const currentHref = getSelectedLinkHref() || '';
-      const url = prompt('Entrez l’URL du lien', currentHref);
-      if (url !== null) {
-        if (url.trim() === '') {
-          document.execCommand('unlink');
-        } else {
-          document.execCommand('createLink', false, url);
-        }
-      }
-    } else {
-      document.execCommand(command, false, value);
-    }
-  };
-
-
-
-
-  return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold text-gray-800">Paramètres</h1>
-
-      <div className="bg-white p-6 rounded-lg shadow space-y-6">
+    <div className="bg-white p-6 rounded-lg shadow space-y-6">
         <h2 className="text-xl font-semibold text-gray-800">Page d’accueil - Image</h2>
         <div>
           <label className="block font-medium mb-1">Image d’accueil</label>
@@ -414,115 +358,12 @@ onChange={(e) =>
 
         <div>
           <label className="block font-medium mb-1">Contenu</label>
-          <div className="flex flex-wrap gap-2 items-center mb-2">
-            <button
-              type="button"
-              onClick={() => handleToolbarClick('bold')}
-              className="px-2 py-1 border rounded"
-            >
-              Gras
-            </button>
-            <button
-              type="button"
-              onClick={() => handleToolbarClick('italic')}
-              className="px-2 py-1 border rounded"
-            >
-              Italique
-            </button>
-            <button
-              type="button"
-              onClick={() => handleToolbarClick('underline')}
-              className="px-2 py-1 border rounded"
-            >
-              Souligné
-            </button>
-            <input
-              type="color"
-              title="Couleur"
-              onChange={(e) => handleToolbarClick('foreColor', e.target.value)}
-              className="w-8 h-8 p-0 border rounded"
-            />
-            <button
-              type="button"
-              onClick={() => handleToolbarClick('justifyLeft')}
-              className="px-2 py-1 border rounded"
-            >
-              Gauche
-            </button>
-            <button
-              type="button"
-              onClick={() => handleToolbarClick('justifyCenter')}
-              className="px-2 py-1 border rounded"
-            >
-              Centre
-            </button>
-            <button
-              type="button"
-              onClick={() => handleToolbarClick('justifyRight')}
-              className="px-2 py-1 border rounded"
-            >
-              Droite
-            </button>
-            <select
-              onChange={(e) => handleFontSizeChange(e.target.value)}
-              className="border rounded px-2 py-1"
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Tailles
-              </option>
-              <option value="12px">Petit</option>
-              <option value="16px">Normal</option>
-              <option value="20px">Grand</option>
-              <option value="24px">Très grand</option>
-            </select>
-            <button
-              type="button"
-              onClick={() => {
-                const currentHref = getSelectedLinkHref() || '';
-                const url = prompt('Entrez l’URL du lien', currentHref);
-
-                if (url !== null) {
-                  const normalizeUrl = (inputUrl: string) => {
-                    if (!/^https?:\/\//i.test(inputUrl)) {
-                      return 'https://' + inputUrl;
-                    }
-                    return inputUrl;
-                  };
-
-                  if (url.trim() === '') {
-                    document.execCommand('unlink');
-                  } else {
-                    const normalizedUrl = normalizeUrl(url.trim());
-                    document.execCommand('createLink', false, normalizedUrl);
-
-                    const selection = window.getSelection();
-                    if (selection && selection.rangeCount > 0) {
-                      const anchor = selection.focusNode?.parentElement;
-                      if (anchor && anchor.tagName === 'A') {
-                        anchor.setAttribute('target', '_blank');
-                        anchor.style.color = 'blue';
-                        anchor.style.textDecoration = 'underline';
-                      }
-                    }
-                  }
-                }
-              }}
-              className="px-2 py-1 border rounded"
-            >
-              Lien
-            </button>
-          </div>
-
-<div
-  ref={editorRef}
-  contentEditable
-  onInput={(e) => setContentAssociation(e.currentTarget.innerHTML)}
-  className="min-h-[150px] border rounded px-3 py-2 focus:outline-none"
-  dir="ltr"
-  style={{ textAlign: 'left' }}
-  suppressContentEditableWarning
-/>
+          <RichTextEditor
+            value={contentAssociation}
+            onChange={setContentAssociation}
+            placeholder="Écrivez le contenu de la page association..."
+            minHeight="300px"
+          />
 
 
 <div>
@@ -566,10 +407,7 @@ onChange={(e) =>
   </div>
 </div>
 
-
-
-
-</div>
+        </div>
 
 
         <button

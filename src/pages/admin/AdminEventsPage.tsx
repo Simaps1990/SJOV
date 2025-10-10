@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Event } from '../../types';
 import { supabase } from '../../supabaseClient';
 import { useContent } from '../../context/ContentContext';
+import RichTextEditor from '../../components/RichTextEditor';
 
 const AdminEventsPage: React.FC = () => {
 
@@ -13,6 +14,7 @@ const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [location, setLocation] = useState('');
   const [start, setStart] = useState('');
   const [enddate, setEnddate] = useState('');
+  const [content, setContent] = useState('');
   const [error, setError] = useState('');
   const [editingEventId, setEditingEventId] = useState<string | null>(null);
   const [eventToDelete, setEventToDelete] = useState<Event | null>(null);
@@ -22,8 +24,6 @@ const [imagesannexesFiles, setImagesannexesFiles] = useState<(File | null)[]>([n
 const [imagesannexesUrls, setImagesannexesUrls] = useState<(string | null)[]>([null, null, null]);
 
 const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const contentRef = useRef<HTMLDivElement>(null);
 
 
 useEffect(() => {
@@ -63,27 +63,12 @@ const handleImagesannexesChange = async (e: React.ChangeEvent<HTMLInputElement>,
 
 
 
-  const handleToolbarClick = (command: string, value?: string) => {
-    document.execCommand(command, false, value);
-  };
-
-  const handleFontSizeChange = (size: string) => {
-    if (!contentRef.current) return;
-    document.execCommand('fontSize', false, '7');
-    const spans = contentRef.current.querySelectorAll('span[style*="font-size"]');
-    spans.forEach((el) => {
-      const span = el as HTMLElement;
-      if (span.style.fontSize) {
-        span.style.fontSize = size;
-      }
-    });
-  };
 
 
 const handleAddEvent = async () => {
 setCoverUrl(null);
 
-    if (!title || !start || !enddate || !contentRef.current) return;
+    if (!title || !start || !enddate || !content.trim()) return;
 
     if (new Date(start) > new Date(enddate)) {
       setError("La date de début ne peut pas être postérieure à la date de fin.");
@@ -98,7 +83,7 @@ console.log('DEBUG - Champs transmis à Supabase :', {
   location,
   start,
   enddate,
-  content: contentRef.current?.innerHTML,
+  content: content,
 image: imageToSave,
 });
 const finalImage = coverUrl || '';
@@ -113,7 +98,7 @@ const newEvent: Omit<Event, 'id' | 'isPast'> = {
   location,
   start,
   enddate,
-  content: contentRef.current.innerHTML,
+  content: content,
 image: finalImage,
   date: start.split('T')[0], // 👈 adapte la date au format 'YYYY-MM-DD' exigé par Supabase
 imagesannexes: sanitizedAnnexes,
@@ -180,13 +165,13 @@ setDescription('');
 setLocation('');
 setStart('');
 setEnddate('');
+setContent('');
 setCoverUrl(null);
 setImagesannexesFiles([null, null, null]);
 setImagesannexesUrls([null, null, null]);
 setEditingEventId(null);
 setError('');
 
-if (contentRef.current) contentRef.current.innerHTML = '';
 if (fileInputRef.current) fileInputRef.current.value = '';
 
 window.scrollTo(0, 0);
@@ -208,9 +193,9 @@ if (fileInputRef.current) fileInputRef.current.value = '';
     setLocation('');
     setStart('');
     setEnddate('');
+    setContent('');
 setImagesannexesFiles([null, null, null]);
 
-    if (contentRef.current) contentRef.current.innerHTML = '';
     setEditingEventId(null);
     setError('');
 if (fileInputRef.current) {
@@ -263,87 +248,12 @@ const sortedEvents = [...events].sort((a, b) => {
           </div>
         </div>
 
-<div className="flex flex-wrap gap-2 items-center text-sm">
-  <button type="button" onClick={() => handleToolbarClick('bold')} className="px-2 py-1 border rounded">Gras</button>
-  <button type="button" onClick={() => handleToolbarClick('italic')} className="px-2 py-1 border rounded">Italique</button>
-  <button type="button" onClick={() => handleToolbarClick('underline')} className="px-2 py-1 border rounded">Souligné</button>
-  <input type="color" onChange={(e) => handleToolbarClick('foreColor', e.target.value)} title="Couleur" />
-  <button type="button" onClick={() => handleToolbarClick('justifyLeft')} className="px-2 py-1 border rounded">Gauche</button>
-  <button type="button" onClick={() => handleToolbarClick('justifyCenter')} className="px-2 py-1 border rounded">Centre</button>
-  <button type="button" onClick={() => handleToolbarClick('justifyRight')} className="px-2 py-1 border rounded">Droite</button>
-  <select
-    onChange={(e) => handleFontSizeChange(e.target.value)}
-    className="border rounded px-2 py-1"
-    defaultValue=""
-  >
-    <option value="" disabled>Tailles</option>
-    <option value="12px">Petit</option>
-    <option value="16px">Normal</option>
-    <option value="20px">Grand</option>
-    <option value="24px">Très grand</option>
-  </select>
-
-  <button
-    type="button"
-    onClick={() => {
-      const getSelectedLinkHref = (): string | null => {
-        const selection = window.getSelection();
-        if (!selection || selection.rangeCount === 0) return null;
-
-        const range = selection.getRangeAt(0);
-        let container: Node | null = range.commonAncestorContainer;
-        if (container.nodeType === 3) {
-          container = container.parentNode;
-        }
-        if (!container) return null;
-
-        let el: HTMLElement | null = container as HTMLElement;
-        while (el && el.tagName !== 'A') {
-          el = el.parentElement;
-        }
-        if (el && el.tagName === 'A') {
-          return el.getAttribute('href');
-        }
-        return null;
-      };
-
-      const currentHref = getSelectedLinkHref() || '';
-      const url = prompt('Entrez l’URL du lien', currentHref);
-
-      if (url !== null) {
-        const normalizeUrl = (inputUrl: string) => {
-          if (!/^https?:\/\//i.test(inputUrl)) {
-            return 'https://' + inputUrl;
-          }
-          return inputUrl;
-        };
-
-        if (url.trim() === '') {
-          document.execCommand('unlink');
-        } else {
-          const normalizedUrl = normalizeUrl(url.trim());
-          document.execCommand('createLink', false, normalizedUrl);
-
-          const selection = window.getSelection();
-          if (selection && selection.rangeCount > 0) {
-            const anchor = selection.focusNode?.parentElement;
-            if (anchor && anchor.tagName === 'A') {
-              anchor.setAttribute('target', '_blank');
-              anchor.style.color = 'blue';
-              anchor.style.textDecoration = 'underline';
-            }
-          }
-        }
-      }
-    }}
-    className="px-2 py-1 border rounded"
-  >
-    Lien
-  </button>
-</div>
-
-
-        <div ref={contentRef} className="w-full min-h-[120px] border rounded px-3 py-2 focus:outline-none" contentEditable style={{ whiteSpace: 'pre-wrap' }} />
+        <RichTextEditor
+          value={content}
+          onChange={setContent}
+          placeholder="Écrivez le contenu de l'événement..."
+          minHeight="250px"
+        />
 
 {/* Image de couverture */}
 <div className="space-y-2 mt-4">
@@ -503,8 +413,8 @@ setDescription(e.description || '');
 setLocation(e.location || '');
 setStart(e.start ? e.start.slice(0, 16) : '');
 setEnddate(e.enddate ? e.enddate.slice(0, 16) : '');
+setContent(e.content || '');
 
-                    if (contentRef.current) contentRef.current.innerHTML = e.content;
 setCoverUrl(e.image ?? null);
 setImagesannexesUrls([
   e.imagesannexes?.[0] ?? null,
@@ -569,10 +479,10 @@ if (error) {
     setLocation('');
     setStart('');
     setEnddate('');
+    setContent('');
     setCoverUrl(null);
     setImagesannexesFiles([null, null, null]);
     setImagesannexesUrls([null, null, null]);
-    if (contentRef.current) contentRef.current.innerHTML = '';
     if (fileInputRef.current) fileInputRef.current.value = '';
   }
 

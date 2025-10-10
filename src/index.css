@@ -77,3 +77,25 @@
     @apply container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
   }
 }
+
+/* React Quill Editor Styles */
+.rich-text-editor .quill {
+  @apply border rounded-md overflow-hidden;
+}
+
+.rich-text-editor .ql-toolbar {
+  @apply bg-gray-50 border-b border-gray-300;
+}
+
+.rich-text-editor .ql-container {
+  @apply bg-white;
+  font-family: inherit;
+}
+
+.rich-text-editor .ql-editor {
+  @apply min-h-[200px] text-base;
+}
+
+.rich-text-editor .ql-editor.ql-blank::before {
+  @apply text-gray-400 italic;
+}

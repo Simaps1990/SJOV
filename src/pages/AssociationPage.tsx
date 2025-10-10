@@ -60,9 +60,12 @@ if (!titreAssociation && !contentAssociation && images.length === 0) {
         })}
       </script>
       <div className="container-custom">
-<h1 className="font-heading font-bold text-4xl mb-2 text-black">
-  {titreAssociation || "Association de Bénévoles de Jardins à Villeurbanne et Vaulx-en-Velin"}
-</h1>
+        <h1 className="font-heading font-bold text-4xl mb-2">
+          {titreAssociation || "Notre association"}
+        </h1>
+        <p className="text-neutral-600 text-lg mb-8">
+          Découvrez l'histoire et les valeurs de notre association de bénévoles.
+        </p>
 
         <div className="mb-10">
           {!contentAssociation && (

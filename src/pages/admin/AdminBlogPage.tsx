@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { BlogPost } from '../../types';
 import { useContent } from '../../context/ContentContext';
+import RichTextEditor from '../../components/RichTextEditor';
 
 const AdminBlogPage = () => {
 
@@ -16,6 +17,7 @@ console.log(" blogPosts dans AdminBlogPage :", blogPosts);
   const [imagesannexesFiles, setImagesannexesFiles] = useState<(File | null)[]>([null, null, null]);
   const [imagesannexesUrls, setImagesannexesUrls] = useState<(string | null)[]>([null, null, null]);
   const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
   
   // Gestion de l'upload de l'image de couverture
   const [error, setError] = useState<string>('');
@@ -45,7 +47,6 @@ useEffect(() => {
 }, [blogPosts]);
 
 
-  const contentRef = useRef<HTMLDivElement>(null);
 
   const getImageGridClass = (images: (string | null)[]) => {
     const validCount = images.filter(img => img).length;
@@ -326,26 +327,11 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
   }
 };
 
-  const handleToolbarClick = (command: string, value?: string) => {
-    document.execCommand(command, false, value);
-  };
-
-  const handleFontSizeChange = (size: string) => {
-    if (!contentRef.current) return;
-    document.execCommand('fontSize', false, '7');
-    const spans = contentRef.current.querySelectorAll('span[style*="font-size"]');
-    spans.forEach((el) => {
-      const span = el as HTMLElement;
-      if (span.style.fontSize) {
-        span.style.fontSize = size;
-      }
-    });
-  };
 
 const handleSubmit = async () => {
   let newUploadedUrls: string[] = [];
 
-  if (!title || !contentRef.current?.innerHTML.trim()) {
+  if (!title || !content.trim()) {
     setError("Le titre et le contenu sont requis.");
     return;
   }
@@ -448,7 +434,7 @@ const handleSubmit = async () => {
   
   const payload = {
     title,
-    content: contentRef.current?.innerHTML ?? '',
+    content: content,
     image: finalImage,  // photo couverture avec l'URL garantie
     imagesannexes: finalImagesAnnexes, // tableau propre avec gestion des suppressions
     excerpt: '',
@@ -478,6 +464,7 @@ const handleSubmit = async () => {
     
     // reset après succès
     setTitle('');
+    setContent('');
     setImage(null);
     setPreviewUrl('');
     setUploadedImageUrl('');
@@ -494,7 +481,6 @@ const handleSubmit = async () => {
     }, 0);
 
     setImagesannexesUrls([null, null, null]);
-    if (contentRef.current) contentRef.current.innerHTML = '';
     setError('');
     
     // Quitter le mode édition et forcer la mise à jour de l'UI
@@ -514,13 +500,11 @@ const handleSubmit = async () => {
 
 const handleEdit = async (post: BlogPost & { imagesannexes?: (string | null)[] }) => {
     setTitle(post.title);
+    setContent(post.content);
     setEditingPost(post);
     setUploadedImageUrl(post.image);
 
     setPreviewUrl(post.image);
-    if (contentRef.current) {
-      contentRef.current.innerHTML = post.content;
-    }
 
     // Récupère les URLs des images annexes et complète à 3 avec des null pour garder la taille
     const filteredUrls = (post.imagesannexes ?? []).filter((url): url is string => url !== null);
@@ -587,94 +571,12 @@ console.log("Posts en state :", posts);
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <div className="flex flex-wrap gap-2 items-center mb-2">
-          <button type="button" onClick={() => handleToolbarClick('bold')} className="px-2 py-1 border rounded">Gras</button>
-          <button type="button" onClick={() => handleToolbarClick('italic')} className="px-2 py-1 border rounded">Italique</button>
-          <button type="button" onClick={() => handleToolbarClick('underline')} className="px-2 py-1 border rounded">Souligné</button>
-          <input
-            type="color"
-            title="Couleur"
-            onChange={(e) => handleToolbarClick('foreColor', e.target.value)}
-            className="w-8 h-8 p-0 border rounded"
-          />
-          <button type="button" onClick={() => handleToolbarClick('justifyLeft')} className="px-2 py-1 border rounded">Gauche</button>
-          <button type="button" onClick={() => handleToolbarClick('justifyCenter')} className="px-2 py-1 border rounded">Centre</button>
-          <button type="button" onClick={() => handleToolbarClick('justifyRight')} className="px-2 py-1 border rounded">Droite</button>
-          <select
-            onChange={(e) => handleFontSizeChange(e.target.value)}
-            className="border rounded px-2 py-1"
-            defaultValue=""
-          >
-            <option value="" disabled>Tailles</option>
-            <option value="12px">Petit</option>
-            <option value="16px">Normal</option>
-            <option value="20px">Grand</option>
-            <option value="24px">Très grand</option>
-          </select>
-          <button
-            type="button"
-            onClick={() => {
-              const getSelectedLinkHref = (): string | null => {
-                const selection = window.getSelection();
-                if (!selection || selection.rangeCount === 0) return null;
 
-                const range = selection.getRangeAt(0);
-                let container: Node | null = range.commonAncestorContainer;
-                if (container.nodeType === 3) {
-                  container = container.parentNode;
-                }
-                if (!container) return null;
-
-                let el: HTMLElement | null = container as HTMLElement;
-                while (el && el.tagName !== 'A') {
-                  el = el.parentElement;
-                }
-                if (el && el.tagName === 'A') {
-                  return el.getAttribute('href');
-                }
-                return null;
-              };
-
-              const currentHref = getSelectedLinkHref() || '';
-              const url = prompt('Entrez l’URL du lien', currentHref);
-
-              if (url !== null) {
-                const normalizeUrl = (inputUrl: string) => {
-                  if (!/^https?:\/\//i.test(inputUrl)) {
-                    return 'https://' + inputUrl;
-                  }
-                  return inputUrl;
-                };
-
-                if (url.trim() === '') {
-                  document.execCommand('unlink');
-                } else {
-                  const normalizedUrl = normalizeUrl(url.trim());
-                  document.execCommand('createLink', false, normalizedUrl);
-
-                  const selection = window.getSelection();
-                  if (selection && selection.rangeCount > 0) {
-                    const anchor = selection.focusNode?.parentElement;
-                    if (anchor && anchor.tagName === 'A') {
-                      anchor.setAttribute('target', '_blank');
-                      anchor.style.color = 'blue';
-                      anchor.style.textDecoration = 'underline';
-                    }
-                  }
-                }
-              }
-            }}
-            className="px-2 py-1 border rounded"
-          >
-            Lien
-          </button>
-        </div>
-
-        <div
-          ref={contentRef}
-          className="w-full min-h-[120px] border rounded px-3 py-2 focus:outline-none"
-          contentEditable
-          style={{ whiteSpace: 'pre-wrap' }}
+        <RichTextEditor
+          value={content}
+          onChange={setContent}
+          placeholder="Écrivez le contenu de votre article..."
+          minHeight="300px"
         />
 
 <div className="space-y-2 mt-4">
@@ -789,6 +691,7 @@ className={`w-full ${imagesannexesUrls[index] ? 'text-transparent' : ''}`}
       <button
         onClick={() => {
           setTitle('');
+          setContent('');
           setImage(null);
           setPreviewUrl('');
           setUploadedImageUrl('');
@@ -796,7 +699,6 @@ className={`w-full ${imagesannexesUrls[index] ? 'text-transparent' : ''}`}
           setImagesannexesUrls([null, null, null]);
           setEditingPost(null);
           setError('');
-          if (contentRef.current) contentRef.current.innerHTML = '';
           const fileInput = document.getElementById('blog-image') as HTMLInputElement | null;
           if (fileInput) fileInput.value = '';
           window.scrollTo(0, 0);
@@ -842,6 +744,7 @@ onClick={async () => {
 
   if (isEditingDeleted) {
     setTitle('');
+    setContent('');
     setImage(null);
     setPreviewUrl('');
     setUploadedImageUrl('');
@@ -849,8 +752,6 @@ onClick={async () => {
     setImagesannexesUrls([null, null, null]);
     setEditingPost(null);
     setError('');
-
-    if (contentRef.current) contentRef.current.innerHTML = '';
 
     const fileInput = document.getElementById('blog-image') as HTMLInputElement | null;
     if (fileInput) fileInput.value = '';
