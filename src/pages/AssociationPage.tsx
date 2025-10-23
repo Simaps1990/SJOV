@@ -39,9 +39,9 @@ if (!titreAssociation && !contentAssociation && images.length === 0) {
   return (
     <div className="pb-16">
       <SEO 
-        title="Association de Bénévoles de Jardins à Villeurbanne et Vaulx-en-Velin | SJOV"
-        description="Association de bénévoles proposant des jardins partagés à Villeurbanne et Vaulx-en-Velin depuis 1936. La SJOV vous accompagne dans vos projets de jardinage urbain et écologique en Rhône-Alpes."
-        keywords="association bénévole jardinage, jardins partagés Villeurbanne, jardins Vaulx-en-Velin, SJOV, Société des Jardins Ouvriers, 69100, bénévolat, jardinage écologique, Rhône-Alpes"
+        title="Association des Jardins Familiaux, Jardins Partagés & Jardin Solidaire Villeurbanne | SJOV"
+        description="Association des jardins familiaux, jardins partagés, jardin solidaire et potager collectif à Villeurbanne depuis 1936. Jardin communal, jardins collectifs, jardin communautaire, jardins participatifs. Membre FNJFC. Demande jardins familiaux, jardinons à l'école."
+        keywords="association jardins, association des jardins familiaux, jardins familiaux, jardin familiaux, les jardins familiaux, jardin ouvrier, jardin familial, jardins collectifs, jardins ouvriers, fnjfc, jardin communal, mon jardins, jardin partagé autour de moi, demande jardins familiaux, jardinons a l'ecole, jardiner a paris, jardin solidaire, jardin partagé, jardins partages, jardin communale, potager collectif, jardin collectif, les jardins partagés, jardin communautaire, jardin en partage, jardin commun, législation jardins partagés, jardin locatif, jardins participatifs, SJOV, Société des Jardins Ouvriers de Villeurbanne, 69100, bénévolat, Rhône-Alpes, Lyon"
       />
       
       {/* Données structurées Schema.org pour améliorer le SEO */}
@@ -49,14 +49,18 @@ if (!titreAssociation && !contentAssociation && images.length === 0) {
         {JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          "name": "Société des Jardins Ouvriers de Villeurbanne",
-          "alternateName": "SJOV",
+          "name": "SJOV - Société des Jardins Ouvriers de Villeurbanne",
+          "alternateName": ["SJOV", "Association des Jardins Familiaux de Villeurbanne", "Jardins Ouvriers Villeurbanne", "Jardins Familiaux Villeurbanne"],
           "url": "https://sjov.fr/association",
           "logo": "https://sjov.fr/images/sjov-logo.png",
-          "description": "Association de bénévoles proposant des jardins partagés à Villeurbanne et Vaulx-en-Velin depuis 1936.",
+          "description": "Association des jardins familiaux et jardins ouvriers à Villeurbanne depuis 1936. Membre FNJFC. Demande jardins familiaux, jardin communal, jardins collectifs.",
           "foundingDate": "1936",
-          "areaServed": ["Villeurbanne", "Vaulx-en-Velin", "Rhône-Alpes"],
-          "keywords": "association bénévole, jardins partagés, Villeurbanne, Vaulx-en-Velin"
+          "areaServed": ["Villeurbanne", "Vaulx-en-Velin", "Lyon", "Rhône-Alpes", "Auvergne-Rhône-Alpes"],
+          "memberOf": {
+            "@type": "Organization",
+            "name": "FNJFC - Fédération Nationale des Jardins Familiaux et Collectifs"
+          },
+          "keywords": "jardins familiaux, jardin familiaux, association jardins, association des jardins familiaux, demande jardins familiaux, jardin ouvrier, jardin familial, fnjfc, jardinons a l'ecole, jardiner a paris, jardin communal, mon jardins, jardin partagé autour de moi, jardins collectifs, jardins ouvriers, jardin solidaire, jardin partagé, jardins partages, jardin communale, potager collectif, jardin collectif, les jardins partagés, jardin communautaire, jardin en partage, jardin commun, législation jardins partagés, jardin locatif, jardins participatifs"
         })}
       </script>
       <div className="container-custom">

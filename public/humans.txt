@@ -1,0 +1,35 @@
+# humanstxt.org/
+# Les humains derrière ce site
+
+/* ÉQUIPE */
+  Association: SJOV - Société des Jardins Ouvriers de Villeurbanne
+  Site web: https://sjov.fr
+  Localisation: Villeurbanne, Rhône-Alpes, France
+
+/* MOTS-CLÉS */
+  Jardins familiaux, jardin familiaux, les jardins familiaux
+  Association jardins, association des jardins familiaux
+  Demande jardins familiaux, jardin ouvrier, jardin familial
+  FNJFC, jardinons a l'ecole, jardiner a paris
+  Jardin communal, mon jardins, jardin partagé autour de moi
+  Jardins collectifs, jardins ouvriers, gmap
+  Jardin solidaire, jardin partagé, jardins partages
+  Jardin communale, potager collectif, jardin collectif
+  Les jardins partagés, jardin communautaire, jardin en partage
+  Jardin commun, législation jardins partagés, jardin locatif
+  Jardins participatifs
+  SJOV, Société des Jardins Ouvriers de Villeurbanne
+  Jardins partagés, jardinage urbain, Villeurbanne, 69100
+  Rhône-Alpes, Lyon, Métropole de Lyon, Auvergne-Rhône-Alpes
+  Bénévolat, permaculture, biodiversité, écologie
+
+/* SITE */
+  Dernière mise à jour: 2025/10/24
+  Standards: HTML5, CSS3, JavaScript, React, TypeScript
+  Composants: React, TailwindCSS, Supabase
+  Logiciels: Visual Studio Code, Git
+  
+/* REMERCIEMENTS */
+  Merci à tous les bénévoles et jardiniers de la SJOV
+  Membre de la FNJFC - Fédération Nationale des Jardins Familiaux et Collectifs
+  Association fondée en 1936

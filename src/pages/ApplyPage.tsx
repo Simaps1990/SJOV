@@ -162,9 +162,9 @@ const ApplyPage: React.FC = () => {
     return (
       <>
         <SEO 
-          title="Postuler pour un Jardin SJOV | Jardins Partagés à Villeurbanne | Rhône-Alpes"
-          description="Postulez pour obtenir un jardin partagé à la SJOV (Société des Jardins Ouvriers de Villeurbanne), association de bénévoles passionnés depuis 1936. Formulaire de demande pour cultiver votre propre parcelle dans nos jardins familiaux à Villeurbanne (69100) en région Rhône-Alpes."
-          keywords="postuler jardin, demande jardin partagé, SJOV, Société des Jardins Ouvriers de Villeurbanne, jardins familiaux, Villeurbanne, 69100, parcelle jardinage, candidature jardin, Rhône-Alpes, Lyon, Métropole de Lyon, Auvergne-Rhône-Alpes, bénévolat, demande adhésion, formulaire candidature, obtenir parcelle, jardins ouvriers, devenir jardinier, attribution jardin, liste attente jardin, jardins collectifs, jardins urbains, cultiver potager, jardinage écologique, jardinage urbain, jardinage familial, parcelle cultivable, terrain jardinage, conditions attribution, engagement associatif, charte jardinier, règlement intérieur"
+          title="Demande Jardins Familiaux, Jardins Partagés & Jardin Solidaire Villeurbanne | SJOV"
+          description="Demande jardins familiaux, jardins partagés, jardin solidaire et potager collectif à Villeurbanne. Association SJOV. Jardin familial, jardin communal, jardins collectifs, jardin communautaire, jardins participatifs. Membre FNJFC depuis 1936."
+          keywords="demande jardins familiaux, jardins familiaux, jardin familiaux, les jardins familiaux, association jardins, association des jardins familiaux, jardin ouvrier, jardin familial, fnjfc, jardinons a l'ecole, jardiner a paris, jardin communal, mon jardins, jardin partagé autour de moi, jardins collectifs, jardins ouvriers, gmap, jardin solidaire, jardin partagé, jardins partages, jardin communale, potager collectif, jardin collectif, les jardins partagés, jardin communautaire, jardin en partage, jardin commun, législation jardins partagés, jardin locatif, jardins participatifs, postuler jardin, demande jardin partagé, SJOV, Villeurbanne, 69100, parcelle jardinage, candidature jardin, Rhône-Alpes, Lyon, bénévolat, demande adhésion, formulaire candidature, obtenir parcelle"
         />
         <div className="pb-16">
           <div className="container-custom">
@@ -181,9 +181,9 @@ const ApplyPage: React.FC = () => {
   return (
     <>
       <SEO 
-        title="Postuler pour un Jardin à Villeurbanne et Vaulx-en-Velin | SJOV | Association de Bénévoles"
-        description="Devenez membre de notre association de bénévoles et obtenez un jardin partagé à Villeurbanne ou Vaulx-en-Velin. La SJOV vous accompagne depuis 1936 dans votre projet de jardinage urbain en Rhône-Alpes."
-        keywords="postuler jardin Villeurbanne, jardin partagé Vaulx-en-Velin, association bénévole jardinage, SJOV, Société des Jardins Ouvriers, 69100, parcelle jardinage, candidature jardin, Rhône-Alpes, Lyon, bénévolat, jardins familiaux, jardins collectifs, jardins urbains"
+        title="Demande Jardins Familiaux, Jardins Partagés & Jardin Solidaire | SJOV Villeurbanne"
+        description="Demande jardins familiaux, jardins partagés, jardin solidaire et potager collectif à Villeurbanne. Association SJOV. Jardin familial, jardin communal, jardins collectifs, jardin communautaire, jardins participatifs. Membre FNJFC depuis 1936."
+        keywords="demande jardins familiaux, jardins familiaux, jardin familiaux, les jardins familiaux, association jardins, association des jardins familiaux, jardin ouvrier, jardin familial, fnjfc, jardinons a l'ecole, jardiner a paris, jardin communal, mon jardins, jardin partagé autour de moi, jardins collectifs, jardins ouvriers, gmap, jardin solidaire, jardin partagé, jardins partages, jardin communale, potager collectif, jardin collectif, les jardins partagés, jardin communautaire, jardin en partage, jardin commun, législation jardins partagés, jardin locatif, jardins participatifs, postuler jardin Villeurbanne, SJOV, 69100, parcelle jardinage, candidature jardin, Rhône-Alpes, Lyon, bénévolat"
       />
       <div className="pb-16">
         <div className="container-custom">

@@ -14,9 +14,9 @@ const EventsPage: React.FC = () => {
   return (
     <div className="pb-16">
       <SEO 
-        title="Événements Jardinage SJOV | Ateliers et Rencontres à Villeurbanne | Rhône-Alpes"
-        description="Participez aux événements de jardinage organisés par les bénévoles de la SJOV à Villeurbanne (69100) en région Rhône-Alpes. Ateliers de plantation, formations sur la culture potagère et rencontres entre jardiniers passionnés depuis 1936."
-        keywords="événements jardinage, ateliers plantation, SJOV, Société des Jardins Ouvriers de Villeurbanne, jardins partagés, Villeurbanne, 69100, rencontres jardiniers, formation jardinage, culture potagère, Rhône-Alpes, Lyon, Métropole de Lyon, Auvergne-Rhône-Alpes, bénévolat, animations jardinage, ateliers pédagogiques, événements associatifs, portes ouvertes jardins, fête des jardins, troc de plantes, troc de graines, marché aux plantes, visites guidées, démonstrations jardinage, conférences jardinage, cours de jardinage, formations permaculture, événements saisonniers, calendrier événements jardinage, rencontres bénévoles, journées participatives, chantiers collectifs, événements écologiques"
+        title="Événements Jardins Familiaux, Jardins Partagés & Jardin Solidaire SJOV | Jardinons à l'école"
+        description="Événements de l'association des jardins familiaux, jardins partagés, jardin solidaire et potager collectif SJOV. Jardins collectifs, jardin communal, jardin communautaire, jardins participatifs. Jardinons à l'école. Membre FNJFC. Ateliers jardinage à Villeurbanne depuis 1936."
+        keywords="jardins familiaux, jardin familiaux, les jardins familiaux, association jardins, association des jardins familiaux, jardin ouvrier, jardin familial, fnjfc, jardinons a l'ecole, jardiner a paris, jardin communal, mon jardins, jardin partagé autour de moi, jardins collectifs, jardins ouvriers, demande jardins familiaux, jardin solidaire, jardin partagé, jardins partages, jardin communale, potager collectif, jardin collectif, les jardins partagés, jardin communautaire, jardin en partage, jardin commun, législation jardins partagés, jardin locatif, jardins participatifs, événements jardinage, ateliers plantation, SJOV, Société des Jardins Ouvriers de Villeurbanne, Villeurbanne, 69100, Rhône-Alpes, Lyon, bénévolat, animations jardinage, fête des jardins, troc de plantes"
       />
       <div className="container-custom">
         <h1 className="font-heading font-bold text-4xl mb-2">Événements</h1>

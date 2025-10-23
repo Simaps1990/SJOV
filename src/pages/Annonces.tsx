@@ -188,9 +188,9 @@ useEffect(() => {
   return (
     <div className="pb-16">
       <SEO 
-        title="Petites Annonces Jardinage SJOV | Échanges et Ventes à Villeurbanne | Rhône-Alpes"
-        description="Consultez les petites annonces de jardinage de la SJOV : échanges de plants, vente de matériel, dons de graines et recherches spécifiques entre jardiniers bénévoles à Villeurbanne (69100) en région Rhône-Alpes."
-        keywords="annonces jardinage, échange plants, vente matériel jardinage, dons graines, SJOV, Société des Jardins Ouvriers de Villeurbanne, jardins partagés, Villeurbanne, 69100, petites annonces, Rhône-Alpes, Lyon, Métropole de Lyon, Auvergne-Rhône-Alpes, bénévolat, troc plantes, marché aux plantes, échange semences, dons boutures, vente outils jardinage, recherche matériel, échange savoirs, partage expérience, plants potagers, graines bio, semences anciennes, variétés locales, plants légumes, plants aromatiques, boutures plantes, outillage jardinage, compost, terreau, pots, bacs, tuteurs, récupération eau"
+        title="Annonces Jardins Familiaux, Jardins Partagés & Jardin Solidaire SJOV Villeurbanne"
+        description="Petites annonces de l'association des jardins familiaux, jardins partagés, jardin solidaire et potager collectif SJOV. Jardins collectifs, jardin communal, jardin communautaire, jardins participatifs. Échanges plants, dons graines. Membre FNJFC à Villeurbanne depuis 1936."
+        keywords="jardins familiaux, jardin familiaux, les jardins familiaux, association jardins, association des jardins familiaux, jardin ouvrier, jardin familial, fnjfc, jardin communal, mon jardins, jardin partagé autour de moi, jardins collectifs, jardins ouvriers, demande jardins familiaux, jardinons a l'ecole, jardiner a paris, jardin solidaire, jardin partagé, jardins partages, jardin communale, potager collectif, jardin collectif, les jardins partagés, jardin communautaire, jardin en partage, jardin commun, législation jardins partagés, jardin locatif, jardins participatifs, annonces jardinage, échange plants, vente matériel jardinage, dons graines, SJOV, Société des Jardins Ouvriers de Villeurbanne, Villeurbanne, 69100, Rhône-Alpes, Lyon, bénévolat, troc plantes"
       />
       <div className="container-custom">
 <h1 className="font-heading font-bold text-4xl mb-2">Les petites annonces</h1>

@@ -1,5 +1,30 @@
+# Robots.txt pour SJOV - Association des Jardins Familiaux de Villeurbanne
+# Jardins familiaux, jardins partagés, jardin solidaire, jardins ouvriers, jardins collectifs, potager collectif, jardin communautaire, jardins participatifs
+
 User-agent: *
 Allow: /
+Crawl-delay: 0
 
-# Sitemap
+# Pages prioritaires pour l'indexation
+Allow: /association
+Allow: /apply
+Allow: /blog
+Allow: /events
+Allow: /annonces
+Allow: /contact
+Allow: /search
+
+# Optimisation pour Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Optimisation pour Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 0
+
+# Sitemap principal
 Sitemap: https://sjov.fr/sitemap.xml
+
+# Mots-clés: jardins familiaux, jardin familiaux, association jardins, association des jardins familiaux, demande jardins familiaux, jardin ouvrier, jardin familial, fnjfc, jardinons a l'ecole, jardiner a paris, jardin communal, mon jardins, jardin partagé autour de moi, jardins collectifs, jardins ouvriers, jardin solidaire, jardin partagé, jardins partages, jardin communale, potager collectif, jardin collectif, les jardins partagés, jardin communautaire, jardin en partage, jardin commun, législation jardins partagés, jardin locatif, jardins participatifs
