@@ -22,6 +22,8 @@ type Demande = {
   motivations: string;
   date: string;
   processed: boolean;
+  archived?: boolean;
+  archived_date?: string;
 };
 
 
@@ -65,12 +67,36 @@ setDemandes((prev) => {
   const updated = prev.map((d) => (d.id === demande.id ? { ...d, processed: !demande.processed } : d));
   localStorage.setItem('applications', JSON.stringify(updated));
   // Mettre à jour le compteur de notifications
-  const nonTraiteesCount = updated.filter(d => !d.processed).length;
+  const nonTraiteesCount = updated.filter(d => !d.processed && !d.archived).length;
   updateNonTraitees(nonTraiteesCount);
   return updated;
 });
 
     setSuccessMessage(`Demande marquée comme ${!demande.processed ? 'traitée' : 'non traitée'}.`);
+  }
+};
+
+const archiveApplication = async (demande: Demande) => {
+  const archivedDate = new Date().toISOString();
+  const { error } = await supabase
+    .from('applications')
+    .update({ archived: true, archived_date: archivedDate })
+    .eq('id', demande.id);
+
+  if (error) {
+    console.error('Erreur lors de l\'archivage :', error);
+  } else {
+    setDemandes((prev) => {
+      const updated = prev.map((d) => 
+        d.id === demande.id ? { ...d, archived: true, archived_date: archivedDate } : d
+      );
+      localStorage.setItem('applications', JSON.stringify(updated));
+      // Mettre à jour le compteur de notifications
+      const nonTraiteesCount = updated.filter(d => !d.processed && !d.archived).length;
+      updateNonTraitees(nonTraiteesCount);
+      return updated;
+    });
+    setSuccessMessage('Demande archivée avec succès.');
   }
 };
 
@@ -97,15 +123,18 @@ setDemandes((prev) => {
     window.location.href = `mailto:sjovilleurbanne@gmail.com?subject=nouvelle%20demande%20d'adhesion&body=${corps}`;
   };
 
+  const demandesActives = demandes.filter(d => !d.archived);
+  const demandesArchivees = demandes.filter(d => d.archived);
+
   return (
     <div className="space-y-6 pb-20">
       <h1 className="text-3xl font-bold text-gray-800">Demandes de jardin</h1>
 
       <div className="space-y-6">
-        {demandes.length === 0 ? (
-          <p className="text-neutral-500">Aucune demande enregistrée.</p>
+        {demandesActives.length === 0 ? (
+          <p className="text-neutral-500">Aucune demande active enregistrée.</p>
         ) : (
-          [...demandes]
+          [...demandesActives]
             .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
             .map((demande) => (
               <div
@@ -159,6 +188,15 @@ setDemandes((prev) => {
                     {demande.processed ? 'Traitée' : 'Non traitée'}
                   </label>
 
+                  {demande.processed && (
+                    <button
+                      onClick={() => archiveApplication(demande)}
+                      className="text-orange-600 hover:underline font-semibold"
+                    >
+                      Archiver la demande
+                    </button>
+                  )}
+
                   <button
                     onClick={() => telecharger(demande)}
                     className="text-green-700 hover:underline"
@@ -188,6 +226,86 @@ setDemandes((prev) => {
             ))
         )}
       </div>
+
+      {demandesArchivees.length > 0 && (
+        <div className="space-y-6 mt-12">
+          <h2 className="text-2xl font-bold text-gray-600">Demandes archivées</h2>
+          <div className="space-y-6">
+            {[...demandesArchivees]
+              .sort((a, b) => new Date(b.archived_date || b.date).getTime() - new Date(a.archived_date || a.date).getTime())
+              .map((demande) => (
+                <div
+                  key={demande.id}
+                  className="bg-gray-100 rounded-lg shadow-sm p-6 border-l-4 border-gray-400 opacity-75"
+                >
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-semibold text-gray-600">{demande.nom}</h2>
+                    <div className="text-sm text-gray-500">
+                      <p>Demande: {new Date(demande.date).toLocaleDateString('fr-FR', {
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      })}</p>
+                      {demande.archived_date && (
+                        <p className="font-semibold">Archivée le: {new Date(demande.archived_date).toLocaleDateString('fr-FR', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="text-sm text-gray-600 space-y-1 mb-4">
+                    <p><strong>Email :</strong> {demande.email}</p>
+                    <p><strong>Adresse :</strong> {demande.adresse}</p>
+                    <p><strong>Ville :</strong> {demande.ville || 'Non spécifiée'}</p>
+                    <p><strong>Téléphone portable :</strong> {demande.telephoneportable}</p>
+                    {demande.telephonefixe && (
+                      <p><strong>Téléphone fixe :</strong> {demande.telephonefixe}</p>
+                    )}
+                    <p><strong>Taille du jardin :</strong> {demande.taillejardin}</p>
+                    <p><strong>Expérience jardinage :</strong> {demande.experience}</p>
+                    <p><strong>Budget connu :</strong> {demande.budgetconnu}</p>
+                    <p><strong>Temps disponible :</strong> {demande.tempsdisponible}</p>
+                    <p><strong>Inspection mensuelle acceptée :</strong> {demande.inspectionconnu}</p>
+                    <p><strong>Engagement charte :</strong> {demande.engagementcharte}</p>
+                    <p><strong>Engagement règlement :</strong> {demande.engagementreglement}</p>
+                    <p><strong>Engagement lieu public (pas de manifestation religieuse) :</strong> {demande.engagementlieupublic}</p>
+                    <p><strong>Motivations :</strong> {demande.motivations}</p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-4 text-sm">
+                    <button
+                      onClick={() => telecharger(demande)}
+                      className="text-gray-600 hover:underline"
+                    >
+                      Télécharger
+                    </button>
+
+                    <button
+                      onClick={() => envoyerEmail(demande)}
+                      className="text-gray-600 hover:underline"
+                    >
+                      Envoyer par email
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setDemandeASupprimer(demande);
+                        setShowConfirmModal(true);
+                      }}
+                      className="text-red-600 hover:underline"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+
 {successMessage && (
   <SuccessModal message={successMessage} onClose={() => setSuccessMessage(null)} />
 )}
@@ -208,7 +326,7 @@ setDemandes((prev) => {
                 const updated = prev.filter(d => d.id !== demandeASupprimer.id);
                 localStorage.setItem('applications', JSON.stringify(updated));
                 // Mettre à jour le compteur de notifications
-                const nonTraiteesCount = updated.filter(d => !d.processed).length;
+                const nonTraiteesCount = updated.filter(d => !d.processed && !d.archived).length;
                 updateNonTraitees(nonTraiteesCount);
                 return updated;
               });

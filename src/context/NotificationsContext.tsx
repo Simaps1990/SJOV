@@ -30,7 +30,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
     } else {
       // Si aucun nombre n'est fourni, récupérer depuis le localStorage
       const data = JSON.parse(localStorage.getItem('applications') || '[]');
-      const nonTraiteesCount = data.filter((d: any) => !d.processed).length;
+      const nonTraiteesCount = data.filter((d: any) => !d.processed && !d.archived).length;
       setNonTraitees(nonTraiteesCount);
     }
   };
@@ -70,7 +70,8 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
       const { data, error } = await supabase
         .from('applications')
         .select('*')
-        .eq('processed', false);
+        .eq('processed', false)
+        .or('archived.is.null,archived.eq.false');
 
       if (error) {
         console.error('Erreur lors de la récupération des demandes non traitées:', error);
