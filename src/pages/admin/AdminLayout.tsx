@@ -4,6 +4,8 @@ import {
   LayoutDashboard,
   FileText,
   Calendar,
+  Leaf,
+  Map,
   Users,
   Settings,
   LogOut,
@@ -64,6 +66,16 @@ const AdminLayout: React.FC = () => {
           )}
         </div>
       ),
+    },
+    {
+      path: '/admin/jardiniers',
+      label: 'Jardiniers',
+      icon: <Leaf size={20} />,
+    },
+    {
+      path: '/admin/parcelles',
+      label: 'Parcelles',
+      icon: <Map size={20} />,
     },
     {
   path: '/admin/annonces',

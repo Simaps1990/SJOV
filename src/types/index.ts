@@ -86,4 +86,23 @@ export type Annonce = {
   created_at?: string;
 };
 
+export type SecteurParcelle = 'siege' | 'clos_jacquet' | 'digue_sud' | 'digue_nord' | 'nord';
 
+export interface Parcelle {
+  id: string;
+  numero_parcelle: number | null;
+  surface_m2: number | null;
+  secteur: SecteurParcelle | null;
+  created_at?: string;
+}
+
+export interface Jardinier {
+  id: string;
+  nom: string | null;
+  numero_parcelle: number | null;
+  email: string | null;
+  telephone: string | null;
+  annee_naissance: number | null;
+  statut: 'actif' | 'retraite' | null;
+  created_at?: string;
+}

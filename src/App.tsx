@@ -33,6 +33,8 @@ import AdminApplicationsPage from './pages/admin/AdminApplicationsPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage.tsx';
 import ProtectedRoute from './ProtectedRoute';
 import AdminAnnoncesPage from './pages/admin/AdminAnnoncesPage';
+import AdminJardiniersPage from './pages/admin/AdminJardiniersPage';
+import AdminParcellesPage from './pages/admin/AdminParcellesPage';
 
 // Public Layout
 const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -96,6 +98,8 @@ function App() {
               <Route path="blog" element={<AdminBlogPage />} />
               <Route path="events" element={<AdminEventsPage />} />
               <Route path="applications" element={<AdminApplicationsPage />} />
+              <Route path="jardiniers" element={<AdminJardiniersPage />} />
+              <Route path="parcelles" element={<AdminParcellesPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
               <Route path="annonces" element={<AdminAnnoncesPage />} /> {/* ❗ AJOUT ICI */}
             </Route>
