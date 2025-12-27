@@ -3,7 +3,7 @@ import { Link2Off, Pencil, Trash2 } from 'lucide-react';
 import { supabase } from '../../supabaseClient';
 import type { Jardinier, Parcelle, SecteurParcelle } from '../../types';
 
-type SortKey = 'nom' | 'numero_parcelle' | 'email' | 'telephone' | 'annee_naissance' | 'statut';
+type SortKey = 'nom' | 'numero_parcelle' | 'email' | 'telephone' | 'anciennete' | 'annee_naissance' | 'statut';
 
 type SortDir = 'asc' | 'desc';
 
@@ -71,6 +71,7 @@ const AdminJardiniersPage: React.FC = () => {
   const [numeroParcelle, setNumeroParcelle] = useState('');
   const [email, setEmail] = useState('');
   const [telephone, setTelephone] = useState('');
+  const [anciennete, setAnciennete] = useState('');
   const [anneeNaissance, setAnneeNaissance] = useState('');
   const [statut, setStatut] = useState<'' | 'actif' | 'retraite'>('');
 
@@ -132,6 +133,7 @@ const AdminJardiniersPage: React.FC = () => {
     setNumeroParcelle('');
     setEmail('');
     setTelephone('');
+    setAnciennete('');
     setAnneeNaissance('');
     setStatut('');
     setError(null);
@@ -144,6 +146,7 @@ const AdminJardiniersPage: React.FC = () => {
     setNumeroParcelle(jardinier.numero_parcelle !== null && jardinier.numero_parcelle !== undefined ? String(jardinier.numero_parcelle) : '');
     setEmail(jardinier.email || '');
     setTelephone(jardinier.telephone || '');
+    setAnciennete(jardinier.anciennete !== null && jardinier.anciennete !== undefined ? String(jardinier.anciennete) : '');
     setAnneeNaissance(
       jardinier.annee_naissance !== null && jardinier.annee_naissance !== undefined ? String(jardinier.annee_naissance) : ''
     );
@@ -227,7 +230,7 @@ const AdminJardiniersPage: React.FC = () => {
     const compare = (a: Jardinier, b: Jardinier) => {
       const dir = sortDir === 'asc' ? 1 : -1;
 
-      if (sortKey === 'annee_naissance') {
+      if (sortKey === 'annee_naissance' || sortKey === 'anciennete') {
         const va = Number(a[sortKey] ?? 0);
         const vb = Number(b[sortKey] ?? 0);
         return (va - vb) * dir;
@@ -300,11 +303,18 @@ const AdminJardiniersPage: React.FC = () => {
       return;
     }
 
+    const ancienneteValue = anciennete.trim() ? Number(anciennete) : null;
+    if (anciennete.trim() && Number.isNaN(ancienneteValue)) {
+      setError("L'ancienneté doit être un nombre.");
+      return;
+    }
+
     const payload = {
       nom: nom.trim() || null,
       numero_parcelle: numeroParcelleValue ? numeroParcelleValue : null,
       email: email.trim() || null,
       telephone: telephone.trim() || null,
+      anciennete: ancienneteValue,
       annee_naissance: anneeNaissanceValue,
       statut: statut || null,
     };
@@ -481,6 +491,16 @@ const AdminJardiniersPage: React.FC = () => {
           </div>
 
           <div className="space-y-1">
+            <label className="block text-sm font-medium text-gray-700">Ancienneté</label>
+            <input
+              className="w-full border px-3 py-2 rounded"
+              value={anciennete}
+              onChange={(e) => setAnciennete(e.target.value)}
+              placeholder="Ex: 5"
+            />
+          </div>
+
+          <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Statut</label>
             <select
               className="w-full border px-3 py-2 rounded"
@@ -600,6 +620,15 @@ const AdminJardiniersPage: React.FC = () => {
                   <th className="py-2 pr-2 md:pr-4">
                     <button
                       className="font-semibold flex flex-col items-start leading-none"
+                      onClick={() => toggleSort('anciennete')}
+                    >
+                      <span className="text-[10px] h-3">{sortIndicator('anciennete') || ' '}</span>
+                      <span>Ancienneté</span>
+                    </button>
+                  </th>
+                  <th className="py-2 pr-2 md:pr-4">
+                    <button
+                      className="font-semibold flex flex-col items-start leading-none"
                       onClick={() => toggleSort('statut')}
                     >
                       <span className="text-[10px] h-3">{sortIndicator('statut') || ' '}</span>
@@ -661,6 +690,7 @@ const AdminJardiniersPage: React.FC = () => {
                       )}
                     </td>
                     <td className="py-2 pr-2 md:pr-4">{jardinier.annee_naissance ?? ''}</td>
+                    <td className="py-2 pr-2 md:pr-4">{jardinier.anciennete ?? ''}</td>
                     <td className="py-2 pr-2 md:pr-4">
                       {jardinier.statut === 'actif' ? 'Actif' : jardinier.statut === 'retraite' ? 'Retraité' : ''}
                     </td>

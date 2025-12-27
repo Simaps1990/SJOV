@@ -102,6 +102,7 @@ export interface Jardinier {
   numero_parcelle: string | null;
   email: string | null;
   telephone: string | null;
+  anciennete: number | null;
   annee_naissance: number | null;
   statut: 'actif' | 'retraite' | null;
   created_at?: string;
