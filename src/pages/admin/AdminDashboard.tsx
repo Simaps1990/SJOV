@@ -13,8 +13,6 @@ const AdminDashboard: React.FC = () => {
 
   const upcomingEvents = events.filter(event => !event.isPast);
 
-
-const { associationContent } = useContent();
 const [annoncesCount, setAnnoncesCount] = useState<number>(0);
 
 const [nonTraitees, setNonTraitees] = useState(0);
@@ -27,23 +25,6 @@ const [parcellesTotales, setParcellesTotales] = useState<number | null>(null);
     .slice(0, 3);
 
 useEffect(() => {
-  if (!associationContent) {
-    setParcellesOccupees(null);
-    setParcellesTotales(null);
-  } else {
-    setParcellesOccupees(
-      associationContent.parcellesOccupees !== null && associationContent.parcellesOccupees !== undefined
-        ? Number(associationContent.parcellesOccupees)
-        : null
-    );
-
-    setParcellesTotales(
-      associationContent.parcellesTotal !== null && associationContent.parcellesTotal !== undefined
-        ? Number(associationContent.parcellesTotal)
-        : null
-    );
-  }
-
   const fetchNonTraitees = async () => {
     const { count, error } = await supabase
       .from('applications')
@@ -54,45 +35,71 @@ useEffect(() => {
       console.error('Erreur chargement demandes :', error.message);
       return;
     }
-const fetchAnnoncesValidees = async () => {
-  const { count, error } = await supabase
-    .from('annonces')
-    .select('*', { count: 'exact', head: true })
-    .eq('statut', 'validé');
-
-  if (!error) {
-    setAnnoncesCount(count || 0);
-  }
-};
-
-fetchAnnoncesValidees();
-fetchAnnoncesNonValidees();
 
     setNonTraitees(count || 0);
   };
-const fetchAnnoncesNonValidees = async () => {
-  const { count, error } = await supabase
-    .from('annonces')
-    .select('*', { count: 'exact', head: true })
-    .eq('statut', 'en_attente');
 
-  if (!error) {
-    localStorage.setItem('annoncesEnAttente', String(count || 0));
-window.dispatchEvent(new Event('storage'));
+  const fetchAnnoncesValidees = async () => {
+    const { count, error } = await supabase
+      .from('annonces')
+      .select('*', { count: 'exact', head: true })
+      .eq('statut', 'validé');
 
-  }
-};
+    if (!error) {
+      setAnnoncesCount(count || 0);
+    }
+  };
+
+  const fetchAnnoncesNonValidees = async () => {
+    const { count, error } = await supabase
+      .from('annonces')
+      .select('*', { count: 'exact', head: true })
+      .eq('statut', 'en_attente');
+
+    if (!error) {
+      localStorage.setItem('annoncesEnAttente', String(count || 0));
+      window.dispatchEvent(new Event('storage'));
+    }
+  };
+
+  const fetchParcellesStats = async () => {
+    const { count: totales, error: totalesError } = await supabase
+      .from('parcelles')
+      .select('*', { count: 'exact', head: true });
+
+    if (totalesError) {
+      console.error('Erreur chargement parcelles :', totalesError.message);
+    } else {
+      setParcellesTotales(totales ?? 0);
+    }
+
+    const { count: occupees, error: occupeesError } = await supabase
+      .from('jardiniers')
+      .select('*', { count: 'exact', head: true })
+      .not('numero_parcelle', 'is', null);
+
+    if (occupeesError) {
+      console.error('Erreur chargement parcelles occupées :', occupeesError.message);
+    } else {
+      setParcellesOccupees(occupees ?? 0);
+    }
+  };
 
   fetchNonTraitees();
-  const interval = setInterval(fetchNonTraitees, 30000);
+  fetchAnnoncesValidees();
+  fetchAnnoncesNonValidees();
+  fetchParcellesStats();
 
-return () => {
-  clearInterval(interval);
-  localStorage.removeItem('annoncesEnAttente');
-};
+  const interval = setInterval(() => {
+    fetchNonTraitees();
+    fetchParcellesStats();
+  }, 30000);
 
-
-}, [associationContent]);
+  return () => {
+    clearInterval(interval);
+    localStorage.removeItem('annoncesEnAttente');
+  };
+}, []);
 
 
   const formatDate = (dateStr: string) => {

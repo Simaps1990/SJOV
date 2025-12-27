@@ -130,11 +130,12 @@ const AdminParcellesPage: React.FC = () => {
     const bySecteur = SECTEURS.map((s) => {
       const list = parcelles.filter((p) => p.secteur === s.value);
       const count = list.length;
-      const sumM2 = list
+      const surfaces = list
         .map((p) => p.surface_m2)
-        .filter((v): v is number => typeof v === 'number' && Number.isFinite(v))
-        .reduce((sum, v) => sum + v, 0);
-      const avgM2 = count ? sumM2 / count : null;
+        .filter((v): v is number => typeof v === 'number' && Number.isFinite(v));
+      const sumM2 = surfaces.reduce((sum, v) => sum + v, 0);
+      const countAvecSurface = surfaces.length;
+      const avgM2 = countAvecSurface ? sumM2 / countAvecSurface : null;
       return { ...s, count, avgM2 };
     });
 
@@ -350,35 +351,40 @@ const AdminParcellesPage: React.FC = () => {
                 <tr className="text-left border-b">
                   <th className="py-2 pr-2 md:pr-4">
                     <button
-                      className="font-semibold flex flex-col items-start leading-none"
+                      className="font-semibold inline-flex items-center gap-1 leading-none"
                       onClick={() => toggleSort('numero_parcelle')}
                     >
-                      <span className="text-[10px] h-3">{sortIndicator('numero_parcelle') || ' '}</span>
-                      <span>
+                      <span className="leading-none">
                         <span className="hidden md:inline">Parcelle</span>
                         <span className="md:hidden">N°</span>
                       </span>
+                      <span className="w-3 text-[10px] leading-none">{sortIndicator('numero_parcelle') || ''}</span>
                     </button>
                   </th>
                   <th className="py-2 pr-2 md:pr-4">
                     <button
-                      className="font-semibold flex flex-col items-start leading-none"
+                      className="font-semibold inline-flex items-center gap-1 leading-none"
                       onClick={() => toggleSort('surface_m2')}
                     >
-                      <span className="text-[10px] h-3">{sortIndicator('surface_m2') || ' '}</span>
-                      <span>M²</span>
+                      <span className="leading-none">M²</span>
+                      <span className="w-3 text-[10px] leading-none">{sortIndicator('surface_m2') || ''}</span>
                     </button>
                   </th>
                   <th className="py-2 pr-0 md:pr-4">
                     <button
-                      className="font-semibold flex flex-col items-start leading-none"
+                      className="font-semibold inline-flex items-center gap-1 leading-none"
                       onClick={() => toggleSort('secteur')}
                     >
-                      <span className="text-[10px] h-3">{sortIndicator('secteur') || ' '}</span>
-                      <span>Secteur</span>
+                      <span className="leading-none">Secteur</span>
+                      <span className="w-3 text-[10px] leading-none">{sortIndicator('secteur') || ''}</span>
                     </button>
                   </th>
-                  <th className="py-2">Actions</th>
+                  <th className="py-2">
+                    <span className="font-semibold inline-flex items-center gap-1 leading-none">
+                      <span className="leading-none">Actions</span>
+                      <span className="w-3 text-[10px] leading-none" />
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -400,31 +406,18 @@ const AdminParcellesPage: React.FC = () => {
                       <td className="py-2">
                         <div className="flex items-center gap-1 md:gap-4">
                           <button
-                            onClick={() => startEdit(parcelle)}
-                            className="text-blue-600 text-sm hover:underline hidden md:inline"
-                          >
-                            Modifier
-                          </button>
-                          <button
                             type="button"
                             onClick={() => startEdit(parcelle)}
-                            className="md:hidden p-1.5 text-blue-600 hover:text-blue-800"
+                            className="p-1.5 text-blue-600 hover:text-blue-800"
                             aria-label="Modifier"
                             title="Modifier"
                           >
                             <Pencil size={18} />
                           </button>
-
-                          <button
-                            onClick={() => setConfirmDeleteId(parcelle.id)}
-                            className="text-red-600 text-sm hover:underline hidden md:inline"
-                          >
-                            Supprimer
-                          </button>
                           <button
                             type="button"
                             onClick={() => setConfirmDeleteId(parcelle.id)}
-                            className="md:hidden p-1.5 text-red-600 hover:text-red-800"
+                            className="p-1.5 text-red-600 hover:text-red-800"
                             aria-label="Supprimer"
                             title="Supprimer"
                           >

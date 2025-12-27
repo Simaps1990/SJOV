@@ -100,6 +100,7 @@ export interface Jardinier {
   id: string;
   nom: string | null;
   numero_parcelle: string | null;
+  adresse: string | null;
   email: string | null;
   telephone: string | null;
   anciennete: number | null;

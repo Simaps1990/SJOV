@@ -7,48 +7,98 @@ type SortKey = 'nom' | 'numero_parcelle' | 'email' | 'telephone' | 'anciennete' 
 
 type SortDir = 'asc' | 'desc';
 
-type ProgressRingProps = {
-  percent: number;
+type MultiStatusRingProps = {
+  pctActifs: number;
+  pctRetraites: number;
+  pctNonRenseigne: number;
   size?: number;
   stroke?: number;
-  className?: string;
 };
 
-const ProgressRing: React.FC<ProgressRingProps> = ({ percent, size = 52, stroke = 6, className }) => {
-  const pct = Number.isFinite(percent) ? Math.max(0, Math.min(100, percent)) : 0;
+const MultiStatusRing: React.FC<MultiStatusRingProps> = ({
+  pctActifs,
+  pctRetraites,
+  pctNonRenseigne,
+  size = 72,
+  stroke = 8,
+}) => {
+  const safe = (v: number) => (Number.isFinite(v) && v > 0 ? v : 0);
+  const a = safe(pctActifs);
+  const r = safe(pctRetraites);
+  const n = safe(pctNonRenseigne);
+  const total = a + r + n || 1;
+
+  const fa = a / total;
+  const fr = r / total;
+  const fn = n / total;
+
   const radius = (size - stroke) / 2;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference * (1 - pct / 100);
+
+  const segLength = (f: number) => circumference * f;
+
+  const startActifs = 0;
+  const startRetraites = fa;
+  const startNonRenseigne = fa + fr;
 
   return (
-    <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className={className}>
+    <svg width={size} height={size} className="text-neutral-200">
+      {/* fond cercle */}
+      <circle
+        cx={size / 2}
+        cy={size / 2}
+        r={radius}
+        fill="transparent"
+        stroke="currentColor"
+        strokeWidth={stroke}
+        opacity={0.3}
+      />
+
+      {/* Actifs - vert */}
+      {fa > 0 && (
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="transparent"
-          stroke="currentColor"
-          opacity={0.15}
-          strokeWidth={stroke}
-        />
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          fill="transparent"
-          stroke="currentColor"
+          stroke="#16a34a"
           strokeWidth={stroke}
           strokeLinecap="round"
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+          strokeDasharray={`${segLength(fa)} ${circumference - segLength(fa)}`}
+          transform={`rotate(${(startActifs * 360 - 90).toFixed(3)} ${size / 2} ${size / 2})`}
         />
-      </svg>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-xs font-semibold text-neutral-800">{Math.round(pct)}%</span>
-      </div>
-    </div>
+      )}
+
+      {/* Retraités - orange */}
+      {fr > 0 && (
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="transparent"
+          stroke="#ea580c"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={`${segLength(fr)} ${circumference - segLength(fr)}`}
+          transform={`rotate(${(startRetraites * 360 - 90).toFixed(3)} ${size / 2} ${size / 2})`}
+        />
+      )}
+
+      {/* Non renseigné - gris */}
+      {fn > 0 && (
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="transparent"
+          stroke="#9ca3af"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={`${segLength(fn)} ${circumference - segLength(fn)}`}
+          transform={`rotate(${(startNonRenseigne * 360 - 90).toFixed(3)} ${size / 2} ${size / 2})`}
+        />
+      )}
+    </svg>
   );
 };
 
@@ -69,6 +119,7 @@ const AdminJardiniersPage: React.FC = () => {
 
   const [nom, setNom] = useState('');
   const [numeroParcelle, setNumeroParcelle] = useState('');
+  const [adresse, setAdresse] = useState('');
   const [email, setEmail] = useState('');
   const [telephone, setTelephone] = useState('');
   const [anciennete, setAnciennete] = useState('');
@@ -131,6 +182,7 @@ const AdminJardiniersPage: React.FC = () => {
     setEditingId(null);
     setNom('');
     setNumeroParcelle('');
+    setAdresse('');
     setEmail('');
     setTelephone('');
     setAnciennete('');
@@ -144,6 +196,7 @@ const AdminJardiniersPage: React.FC = () => {
     setEditingId(jardinier.id);
     setNom(jardinier.nom || '');
     setNumeroParcelle(jardinier.numero_parcelle !== null && jardinier.numero_parcelle !== undefined ? String(jardinier.numero_parcelle) : '');
+    setAdresse(jardinier.adresse || '');
     setEmail(jardinier.email || '');
     setTelephone(jardinier.telephone || '');
     setAnciennete(jardinier.anciennete !== null && jardinier.anciennete !== undefined ? String(jardinier.anciennete) : '');
@@ -255,6 +308,7 @@ const AdminJardiniersPage: React.FC = () => {
     const total = jardiniers.length;
     const actifs = jardiniers.filter((j) => j.statut === 'actif').length;
     const retraites = jardiniers.filter((j) => j.statut === 'retraite').length;
+    const nonRenseigne = total - actifs - retraites;
 
     const nowYear = new Date().getFullYear();
     const ages = jardiniers
@@ -269,8 +323,10 @@ const AdminJardiniersPage: React.FC = () => {
       total,
       actifs,
       retraites,
+      nonRenseigne,
       pctActifs: total ? (actifs / total) * 100 : 0,
       pctRetraites: total ? (retraites / total) * 100 : 0,
+      pctNonRenseigne: total ? (nonRenseigne / total) * 100 : 0,
       avgAge,
     };
   }, [jardiniers]);
@@ -312,6 +368,7 @@ const AdminJardiniersPage: React.FC = () => {
     const payload = {
       nom: nom.trim() || null,
       numero_parcelle: numeroParcelleValue ? numeroParcelleValue : null,
+      adresse: adresse.trim() || null,
       email: email.trim() || null,
       telephone: telephone.trim() || null,
       anciennete: ancienneteValue,
@@ -461,6 +518,16 @@ const AdminJardiniersPage: React.FC = () => {
           </div>
 
           <div className="space-y-1">
+            <label className="block text-sm font-medium text-gray-700">Adresse</label>
+            <input
+              className="w-full border px-3 py-2 rounded"
+              value={adresse}
+              onChange={(e) => setAdresse(e.target.value)}
+              placeholder="Adresse"
+            />
+          </div>
+
+          <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Adresse email</label>
             <input
               className="w-full border px-3 py-2 rounded"
@@ -536,25 +603,48 @@ const AdminJardiniersPage: React.FC = () => {
           <p className="text-neutral-500">Aucun jardinier enregistré.</p>
         ) : (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-              <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 flex items-center justify-between">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+              <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 flex items-center justify-between gap-4">
                 <div>
-                  <div className="text-sm font-semibold text-neutral-800">Actifs</div>
-                  <div className="text-xs text-neutral-600">
-                    {jardiniersStats.actifs}/{jardiniersStats.total}
+                  <div className="text-sm font-semibold text-neutral-800">Répartition des statuts</div>
+                  <div className="mt-2 space-y-1 text-xs text-neutral-700">
+                    <div className="flex items-center gap-2">
+                      <span className="inline-block w-3 h-3 rounded-full bg-green-600" />
+                      <span>
+                        Actifs ({jardiniersStats.actifs}/{jardiniersStats.total})
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-block w-3 h-3 rounded-full bg-orange-500" />
+                      <span>
+                        Retraités ({jardiniersStats.retraites}/{jardiniersStats.total})
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="inline-block w-3 h-3 rounded-full bg-gray-400" />
+                      <span>
+                        Non renseigné ({jardiniersStats.nonRenseigne}/{jardiniersStats.total})
+                      </span>
+                    </div>
                   </div>
                 </div>
-                <ProgressRing percent={jardiniersStats.pctActifs} className="text-green-600" />
-              </div>
-
-              <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 flex items-center justify-between">
-                <div>
-                  <div className="text-sm font-semibold text-neutral-800">Retraités</div>
-                  <div className="text-xs text-neutral-600">
-                    {jardiniersStats.retraites}/{jardiniersStats.total}
+                <div className="flex items-center gap-4">
+                  <MultiStatusRing
+                    pctActifs={jardiniersStats.pctActifs}
+                    pctRetraites={jardiniersStats.pctRetraites}
+                    pctNonRenseigne={jardiniersStats.pctNonRenseigne}
+                  />
+                  <div className="text-xs text-neutral-700 space-y-1 min-w-[70px]">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-green-700 font-medium">Actifs</span>
+                      <span>{Math.round(jardiniersStats.pctActifs)}%</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="text-orange-700 font-medium">Retraités</span>
+                      <span>{Math.round(jardiniersStats.pctRetraites)}%</span>
+                    </div>
                   </div>
                 </div>
-                <ProgressRing percent={jardiniersStats.pctRetraites} className="text-orange-600" />
               </div>
 
               <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 flex items-center justify-between">
@@ -574,68 +664,79 @@ const AdminJardiniersPage: React.FC = () => {
                 <tr className="text-left border-b">
                   <th className="py-2 pr-2 md:pr-4">
                     <button
-                      className="font-semibold flex flex-col items-start leading-none"
+                      className="font-semibold inline-flex items-center gap-1 leading-none"
                       onClick={() => toggleSort('nom')}
                     >
-                      <span className="text-[10px] h-3">{sortIndicator('nom') || ' '}</span>
-                      <span>Nom</span>
+                      <span className="leading-none">Nom</span>
+                      <span className="w-3 text-[10px] leading-none">{sortIndicator('nom') || ''}</span>
                     </button>
                   </th>
                   <th className="py-2 pr-2 md:pr-4">
                     <button
-                      className="font-semibold flex flex-col items-start leading-none"
+                      className="font-semibold inline-flex items-center gap-1 leading-none"
                       onClick={() => toggleSort('numero_parcelle')}
                     >
-                      <span className="text-[10px] h-3">{sortIndicator('numero_parcelle') || ' '}</span>
-                      <span>Parcelle</span>
+                      <span className="leading-none">Parcelle</span>
+                      <span className="w-3 text-[10px] leading-none">{sortIndicator('numero_parcelle') || ''}</span>
                     </button>
                   </th>
                   <th className="py-2 pr-2 md:pr-4">
                     <button
-                      className="font-semibold flex flex-col items-start leading-none"
-                      onClick={() => toggleSort('email')}
-                    >
-                      <span className="text-[10px] h-3">{sortIndicator('email') || ' '}</span>
-                      <span>Email</span>
-                    </button>
-                  </th>
-                  <th className="py-2 pr-2 md:pr-4">
-                    <button
-                      className="font-semibold flex flex-col items-start leading-none"
-                      onClick={() => toggleSort('telephone')}
-                    >
-                      <span className="text-[10px] h-3">{sortIndicator('telephone') || ' '}</span>
-                      <span>Téléphone</span>
-                    </button>
-                  </th>
-                  <th className="py-2 pr-2 md:pr-4">
-                    <button
-                      className="font-semibold flex flex-col items-start leading-none"
-                      onClick={() => toggleSort('annee_naissance')}
-                    >
-                      <span className="text-[10px] h-3">{sortIndicator('annee_naissance') || ' '}</span>
-                      <span>Naissance</span>
-                    </button>
-                  </th>
-                  <th className="py-2 pr-2 md:pr-4">
-                    <button
-                      className="font-semibold flex flex-col items-start leading-none"
+                      className="font-semibold inline-flex items-center gap-1 leading-none"
                       onClick={() => toggleSort('anciennete')}
                     >
-                      <span className="text-[10px] h-3">{sortIndicator('anciennete') || ' '}</span>
-                      <span>Ancienneté</span>
+                      <span className="leading-none">Depuis</span>
+                      <span className="w-3 text-[10px] leading-none">{sortIndicator('anciennete') || ''}</span>
+                    </button>
+                  </th>
+                  <th className="py-2 pr-2 md:pr-4">
+                    <span className="font-semibold inline-flex items-center gap-1 leading-none">
+                      <span className="leading-none">Adresse</span>
+                      <span className="w-3 text-[10px] leading-none" />
+                    </span>
+                  </th>
+                  <th className="py-2 pr-2 md:pr-4">
+                    <button
+                      className="font-semibold inline-flex items-center gap-1 leading-none"
+                      onClick={() => toggleSort('email')}
+                    >
+                      <span className="leading-none">Email</span>
+                      <span className="w-3 text-[10px] leading-none">{sortIndicator('email') || ''}</span>
+                    </button>
+                  </th>
+                  <th className="py-2 pr-2 md:pr-4 min-w-[140px]">
+                    <button
+                      className="font-semibold inline-flex items-center gap-1 leading-none"
+                      onClick={() => toggleSort('telephone')}
+                    >
+                      <span className="leading-none">Téléphone</span>
+                      <span className="w-3 text-[10px] leading-none">{sortIndicator('telephone') || ''}</span>
+                    </button>
+                  </th>
+                  <th className="py-2 pr-2 md:pr-4 min-w-[90px]">
+                    <button
+                      className="font-semibold inline-flex items-center gap-1 leading-none"
+                      onClick={() => toggleSort('annee_naissance')}
+                    >
+                      <span className="leading-none">Né en</span>
+                      <span className="w-3 text-[10px] leading-none">{sortIndicator('annee_naissance') || ''}</span>
                     </button>
                   </th>
                   <th className="py-2 pr-2 md:pr-4">
                     <button
-                      className="font-semibold flex flex-col items-start leading-none"
+                      className="font-semibold inline-flex items-center gap-1 leading-none"
                       onClick={() => toggleSort('statut')}
                     >
-                      <span className="text-[10px] h-3">{sortIndicator('statut') || ' '}</span>
-                      <span>Statut</span>
+                      <span className="leading-none">Statut</span>
+                      <span className="w-3 text-[10px] leading-none">{sortIndicator('statut') || ''}</span>
                     </button>
                   </th>
-                  <th className="py-2">Actions</th>
+                  <th className="py-2">
+                    <span className="font-semibold inline-flex items-center gap-1 leading-none">
+                      <span className="leading-none">Actions</span>
+                      <span className="w-3 text-[10px] leading-none" />
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -663,6 +764,8 @@ const AdminJardiniersPage: React.FC = () => {
                         )}
                       </div>
                     </td>
+                    <td className="py-2 pr-2 md:pr-4">{jardinier.anciennete ?? ''}</td>
+                    <td className="py-2 pr-2 md:pr-4">{jardinier.adresse ?? ''}</td>
                     <td className="py-2 pr-2 md:pr-4">
                       {jardinier.email ? (
                         <button
@@ -676,7 +779,7 @@ const AdminJardiniersPage: React.FC = () => {
                         ''
                       )}
                     </td>
-                    <td className="py-2 pr-2 md:pr-4">
+                    <td className="py-2 pr-2 md:pr-4 min-w-[140px]">
                       {jardinier.telephone ? (
                         <button
                           type="button"
@@ -689,8 +792,7 @@ const AdminJardiniersPage: React.FC = () => {
                         ''
                       )}
                     </td>
-                    <td className="py-2 pr-2 md:pr-4">{jardinier.annee_naissance ?? ''}</td>
-                    <td className="py-2 pr-2 md:pr-4">{jardinier.anciennete ?? ''}</td>
+                    <td className="py-2 pr-2 md:pr-4 min-w-[90px]">{jardinier.annee_naissance ?? ''}</td>
                     <td className="py-2 pr-2 md:pr-4">
                       {jardinier.statut === 'actif' ? 'Actif' : jardinier.statut === 'retraite' ? 'Retraité' : ''}
                     </td>

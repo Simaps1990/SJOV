@@ -148,31 +148,6 @@ if (refreshed !== undefined) {    setLocalContent(refreshed);
 
 
 
-const saveParcelles = async () => {
-const occupees = parseInt((localContent.parcellesOccupees ?? 0).toString(), 10);
-const totales = parseInt((localContent.parcellesTotal ?? 0).toString(), 10);
-
-
-  if (isNaN(occupees) || isNaN(totales)) {
-    setSuccessMessage('Merci de saisir des nombres valides pour les parcelles.');
-    return;
-  }
-
-  const refreshed = await updateAssociationContent({
-    id: localContent.id,
-    parcellesOccupees: occupees,
-    parcellesTotal: totales, // ← clé correcte ici
-  });
-
-  if (refreshed !== undefined) {
-    setLocalContent(refreshed);
-    setSuccessMessage('Données de parcelles enregistrées.');
-  }
-};
-
-
-
-
 useEffect(() => {
   if (
     associationContent &&
@@ -295,50 +270,6 @@ onChange={(e) => setLocalContent(prev => ({ ...prev, texteFooter: e.target.value
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow space-y-6">
-        <h2 className="text-xl font-semibold text-gray-800">Parcelles occupées</h2>
-        <div>
-          <label className="block font-medium mb-1">Parcelles occupées</label>
-<input
-  type="number"
-  className="w-full border px-3 py-2 rounded"
-  value={localContent.parcellesOccupees ?? ''}
-onChange={(e) =>
-  setLocalContent(prev => ({
-    ...prev,
-    parcellesOccupees: parseInt(e.target.value || '0', 10),
-  }))
-}
-/>
-
-
-        </div>
-        <div>
-          <label className="block font-medium mb-1">Parcelles totales</label>
-<input
-  type="number"
-  className="w-full border px-3 py-2 rounded"
-  value={localContent.parcellesTotal ?? ''}
-  onChange={(e) =>
-    setLocalContent(prev => ({
-      ...prev,
-      parcellesTotal: parseInt(e.target.value || '0', 10),
-    }))
-  }
-/>
-
-
-        </div>
-<button
-  onClick={saveParcelles}
-  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
->
-  Enregistrer les données de parcelles
-</button>
-
-
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow space-y-6">
         <h2 className="text-xl font-semibold text-gray-800">Page notre association</h2>
         <div>
           <label className="block font-medium mb-1">Titre</label>
@@ -417,60 +348,6 @@ onClick={saveAssociationContent}
           Enregistrer le contenu
         </button>
       </div>
-
-
-<div className="bg-white p-6 rounded-lg shadow space-y-6">
-  <h2 className="text-xl font-semibold text-gray-800">Parcelles</h2>
-
-  <div className="flex items-center space-x-2">
-    <label className="block font-medium mb-1">Nombre occupées:</label>
-    <input
-      type="number"
-      value={localContent.parcellesTotal ?? ''}
-      onChange={(e) =>
-        setLocalContent((prev) => ({
-          ...prev,
-          parcellesTotal: parseInt(e.target.value || '0', 10),
-        }))
-      }
-      className="border px-2 py-1 rounded w-24"
-    />
-  </div>
-
-  <div className="flex items-center space-x-2">
-    <label className="block font-medium mb-1">Nombre total :</label>
-    <input
-      type="number"
-      value={localContent.parcellesOccupees ?? ''}
-      onChange={(e) =>
-        setLocalContent((prev) => ({
-          ...prev,
-          parcellesOccupees: parseInt(e.target.value || '0', 10),
-        }))
-      }
-      className="border px-2 py-1 rounded w-24"
-    />
-  </div>
-
-  <button
-    onClick={async () => {
-      const refreshed = await updateAssociationContent({
-        id: localContent.id,
-        parcellesOccupees: localContent.parcellesOccupees || 0,
-        parcellesTotal: localContent.parcellesTotal || 0,
-      });
-
-      if (refreshed !== undefined) {
-        setLocalContent(refreshed);
-        setSuccessMessage("Données de parcelles enregistrées.");
-      }
-    }}
-    className="bg-blue-600 text-white px-4 py-2 rounded shadow"
-  >
-    Enregistrer
-  </button>
-</div>
-
 
 
 <div className="bg-white p-6 rounded-lg shadow space-y-6">
