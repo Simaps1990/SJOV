@@ -170,7 +170,7 @@ const AdminLayout: React.FC = () => {
 
         {/* Sidebar */}
         <aside
-          className={`bg-white border-r border-neutral-200 w-64 flex-shrink-0 fixed md:static inset-y-0 left-0 z-30 transform transition-transform duration-300 ease-in-out ${
+          className={`bg-white border-r border-neutral-200 w-64 flex-shrink-0 fixed md:static top-14 bottom-0 md:inset-y-0 left-0 z-30 transform transition-transform duration-300 ease-in-out ${
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
           }`}
         >

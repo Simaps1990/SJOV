@@ -109,6 +109,8 @@ const AdminJardiniersPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
+  const [searchQuery, setSearchQuery] = useState('');
+
   const [confirmContact, setConfirmContact] = useState<
     | { kind: 'tel' | 'email'; value: string; nom: string | null }
     | null
@@ -219,6 +221,15 @@ const AdminJardiniersPage: React.FC = () => {
     return 'Secteur Nord';
   };
 
+  const secteurBadge = (value: SecteurParcelle | null) => {
+    if (!value) return null;
+    if (value === 'siege') return { label: 'Siège', badgeClass: 'bg-blue-100 text-blue-700' };
+    if (value === 'clos_jacquet') return { label: 'Clos Jacquet', badgeClass: 'bg-green-100 text-green-700' };
+    if (value === 'digue_sud') return { label: 'Digue Sud', badgeClass: 'bg-orange-100 text-orange-700' };
+    if (value === 'digue_nord') return { label: 'Digue Nord', badgeClass: 'bg-red-100 text-red-700' };
+    return { label: 'Nord', badgeClass: 'bg-gray-100 text-gray-700' };
+  };
+
   const parcelleOptionLabel = (p: Parcelle) => {
     const parts: string[] = [];
     if (p.numero_parcelle !== null && p.numero_parcelle !== undefined) parts.push(String(p.numero_parcelle));
@@ -277,8 +288,34 @@ const AdminJardiniersPage: React.FC = () => {
     setSortDir('asc');
   };
 
+  const filteredJardiniers = useMemo(() => {
+    const q = searchQuery.trim().toLocaleLowerCase();
+    if (!q) return jardiniers;
+
+    const tokens = q.split(/\s+/).filter(Boolean);
+    const toText = (value: unknown) => String(value ?? '').toLocaleLowerCase();
+
+    return jardiniers.filter((j) => {
+      const numero = j.numero_parcelle;
+      const p = numero !== null && numero !== undefined ? parcelles.find((x) => x.numero_parcelle === numero) : undefined;
+      const secteurLong = p?.secteur ? secteurLabel(p.secteur as SecteurParcelle) : '';
+      const secteurShort = secteurLong.replace(/^secteur\s+/i, '');
+
+      const haystack = [
+        toText(j.nom),
+        toText(j.telephone),
+        toText(j.anciennete),
+        toText(j.numero_parcelle),
+        toText(secteurShort),
+        toText(p?.secteur),
+      ].join(' ');
+
+      return tokens.every((t) => haystack.includes(t));
+    });
+  }, [jardiniers, parcelles, searchQuery]);
+
   const sortedJardiniers = useMemo(() => {
-    const list = [...jardiniers];
+    const list = [...filteredJardiniers];
 
     const compare = (a: Jardinier, b: Jardinier) => {
       const dir = sortDir === 'asc' ? 1 : -1;
@@ -302,7 +339,7 @@ const AdminJardiniersPage: React.FC = () => {
     };
 
     return list.sort(compare);
-  }, [jardiniers, sortKey, sortDir]);
+  }, [filteredJardiniers, sortKey, sortDir]);
 
   const jardiniersStats = useMemo(() => {
     const total = jardiniers.length;
@@ -658,6 +695,15 @@ const AdminJardiniersPage: React.FC = () => {
               </div>
             </div>
 
+            <div className="mb-4">
+              <input
+                className="w-full border border-neutral-300 rounded px-3 py-2"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Rechercher (nom, prénom, secteur, téléphone, depuis, parcelle...)"
+              />
+            </div>
+
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
               <thead>
@@ -742,31 +788,47 @@ const AdminJardiniersPage: React.FC = () => {
               <tbody>
                 {sortedJardiniers.map((jardinier) => (
                   <tr key={jardinier.id} className="border-b last:border-0">
-                    <td className="py-2 pr-2 md:pr-4 font-medium text-gray-900">{jardinier.nom ?? ''}</td>
-                    <td className="py-2 pr-2 md:pr-4">
-                      <div className="flex items-center gap-1">
-                        <span>{jardinier.numero_parcelle ?? ''}</span>
-                        {jardinier.numero_parcelle !== null && jardinier.numero_parcelle !== undefined && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const ok = window.confirm(
-                                `Retirer la parcelle ${jardinier.numero_parcelle} de ${jardinier.nom ?? 'ce jardinier'} ?`
-                              );
-                              if (ok) handleUnassignParcelle(jardinier);
-                            }}
-                            className="text-orange-600 hover:text-orange-800 p-1"
-                            aria-label="Retirer la parcelle"
-                            title="Retirer la parcelle"
-                          >
-                            <Link2Off size={18} />
-                          </button>
-                        )}
-                      </div>
+                    <td className="py-2 pr-2 md:pr-4 align-top font-medium text-gray-900">{jardinier.nom ?? ''}</td>
+                    <td className="py-2 pr-2 md:pr-4 align-top">
+                      {(() => {
+                        const numero = jardinier.numero_parcelle;
+                        const p = numero !== null && numero !== undefined ? parcelles.find((x) => x.numero_parcelle === numero) : undefined;
+                        const badge = secteurBadge((p?.secteur as SecteurParcelle | null) ?? null);
+
+                        return (
+                          <div className="flex flex-col items-start gap-1">
+                            <div className="flex items-start gap-1">
+                              <span>{numero ?? ''}</span>
+                              {numero !== null && numero !== undefined && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const ok = window.confirm(
+                                      `Retirer la parcelle ${numero} de ${jardinier.nom ?? 'ce jardinier'} ?`
+                                    );
+                                    if (ok) handleUnassignParcelle(jardinier);
+                                  }}
+                                  className="text-orange-600 hover:text-orange-800 p-0.5"
+                                  aria-label="Retirer la parcelle"
+                                  title="Retirer la parcelle"
+                                >
+                                  <Link2Off size={18} />
+                                </button>
+                              )}
+                            </div>
+
+                            {badge ? (
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${badge.badgeClass}`}>
+                                {badge.label}
+                              </span>
+                            ) : null}
+                          </div>
+                        );
+                      })()}
                     </td>
-                    <td className="py-2 pr-2 md:pr-4">{jardinier.anciennete ?? ''}</td>
-                    <td className="py-2 pr-2 md:pr-4">{jardinier.adresse ?? ''}</td>
-                    <td className="py-2 pr-2 md:pr-4">
+                    <td className="py-2 pr-2 md:pr-4 align-top">{jardinier.anciennete ?? ''}</td>
+                    <td className="py-2 pr-2 md:pr-4 align-top">{jardinier.adresse ?? ''}</td>
+                    <td className="py-2 pr-2 md:pr-4 align-top">
                       {jardinier.email ? (
                         <button
                           type="button"
@@ -779,7 +841,7 @@ const AdminJardiniersPage: React.FC = () => {
                         ''
                       )}
                     </td>
-                    <td className="py-2 pr-2 md:pr-4 min-w-[140px]">
+                    <td className="py-2 pr-2 md:pr-4 min-w-[140px] align-top">
                       {jardinier.telephone ? (
                         <button
                           type="button"
@@ -792,12 +854,10 @@ const AdminJardiniersPage: React.FC = () => {
                         ''
                       )}
                     </td>
-                    <td className="py-2 pr-2 md:pr-4 min-w-[90px]">{jardinier.annee_naissance ?? ''}</td>
-                    <td className="py-2 pr-2 md:pr-4">
-                      {jardinier.statut === 'actif' ? 'Actif' : jardinier.statut === 'retraite' ? 'Retraité' : ''}
-                    </td>
-                    <td className="py-2">
-                      <div className="flex items-center gap-1 md:gap-2">
+                    <td className="py-2 pr-2 md:pr-4 min-w-[90px] align-top">{jardinier.annee_naissance ?? ''}</td>
+                    <td className="py-2 pr-2 md:pr-4 align-top">{jardinier.statut ?? ''}</td>
+                    <td className="py-2 align-top">
+                      <div className="flex items-center gap-1 md:gap-4">
                         <button
                           type="button"
                           onClick={() => startEdit(jardinier)}

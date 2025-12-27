@@ -128,13 +128,13 @@ useEffect(() => {
       <h1 className="text-3xl font-semibold mb-6">Tableau de bord</h1>
 
       {/* Stats Cards */}
-<div className="flex flex-wrap gap-4 mb-8">
+<div className="grid grid-cols-2 gap-4 mb-8">
 
 
 
 <button
   onClick={() => window.location.href = '/admin/blog'}
-  className="w-[220px] bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
+  className="w-full bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
 >
   <div className="flex flex-col items-start justify-center gap-4">
     <div className="text-base font-medium">Articles</div>
@@ -154,10 +154,10 @@ useEffect(() => {
 
 <button
   onClick={() => window.location.href = '/admin/events'}
-  className="w-[220px] bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
+  className="w-full bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
 >
   <div className="flex flex-col items-start justify-center gap-4">
-    <div className="text-base font-medium">Événements à venir</div>
+    <div className="text-base font-medium">Événements</div>
     <div className="flex gap-2 items-center ml-1">
       <div className="bg-accent-100 rounded-full flex items-center justify-center w-9 h-9">
         <Calendar className="text-accent-600 w-6 h-6" />
@@ -173,10 +173,10 @@ useEffect(() => {
 
 <button
   onClick={() => window.location.href = '/admin/applications'}
-  className="w-[220px] bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
+  className="w-full bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
 >
   <div className="flex flex-col items-start justify-center gap-4">
-    <div className="text-base font-medium">Demandes de jardin</div>
+    <div className="text-base font-medium">Demandes</div>
     <div className="flex gap-2 items-center ml-1">
       <div className="bg-secondary-100 rounded-full flex items-center justify-center w-9 h-9">
         <FileText className="text-secondary-600 w-6 h-6" />
@@ -192,7 +192,7 @@ useEffect(() => {
 
 <button
   onClick={() => window.location.href = '/admin/annonces'}
-  className="w-[220px] bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
+  className="w-full bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
 >
   <div className="flex flex-col items-start justify-center gap-4">
     <div className="text-base font-medium">Annonces</div>
@@ -208,14 +208,14 @@ useEffect(() => {
 
 
 
-<div className="w-[220px] bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left">
+<div className="w-full bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left">
   <div className="flex flex-col items-start justify-center gap-4">
-    <div className="text-base font-medium">Parcelles occupées</div>
+    <div className="text-base font-medium">Parcelles</div>
     <div className="flex gap-2 items-center ml-1">
       <div className="bg-green-100 rounded-full flex items-center justify-center w-9 h-9">
         <Users className="text-green-600 w-6 h-6" />
       </div>
-      <div className="text-2xl font-bold leading-none">
+      <div className="text-[1.375rem] font-bold leading-none">
         {parcellesOccupees ?? '--'} / {parcellesTotales ?? '--'}
       </div>
     </div>
