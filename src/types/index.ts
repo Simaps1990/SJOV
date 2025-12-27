@@ -90,7 +90,7 @@ export type SecteurParcelle = 'siege' | 'clos_jacquet' | 'digue_sud' | 'digue_no
 
 export interface Parcelle {
   id: string;
-  numero_parcelle: number | null;
+  numero_parcelle: string | null;
   surface_m2: number | null;
   secteur: SecteurParcelle | null;
   created_at?: string;
@@ -99,7 +99,7 @@ export interface Parcelle {
 export interface Jardinier {
   id: string;
   nom: string | null;
-  numero_parcelle: number | null;
+  numero_parcelle: string | null;
   email: string | null;
   telephone: string | null;
   annee_naissance: number | null;

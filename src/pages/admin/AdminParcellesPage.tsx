@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { supabase } from '../../supabaseClient';
 import type { Parcelle, SecteurParcelle } from '../../types';
 
@@ -6,12 +7,21 @@ type SortKey = 'numero_parcelle' | 'surface_m2' | 'secteur';
 
 type SortDir = 'asc' | 'desc';
 
+const normalizeNumeroParcelle = (value: string) => value.trim().replace(/\s+/g, ' ');
+
+const parseNumeroParcelleForSort = (value: string | null) => {
+  const v = normalizeNumeroParcelle(value ?? '');
+  const m = v.match(/^(\d+)\s*(.*)$/);
+  if (!m) return { num: Number.POSITIVE_INFINITY, suffix: v.toLocaleLowerCase() };
+  return { num: Number(m[1]), suffix: (m[2] ?? '').trim().toLocaleLowerCase() };
+};
+
 const SECTEURS: { value: SecteurParcelle; label: string; badgeClass: string }[] = [
-  { value: 'siege', label: 'Secteur Siège (bleu)', badgeClass: 'bg-blue-100 text-blue-700' },
-  { value: 'clos_jacquet', label: 'Secteur Clos Jacquet (vert)', badgeClass: 'bg-green-100 text-green-700' },
-  { value: 'digue_sud', label: 'Secteur Digue Sud (orange clair)', badgeClass: 'bg-orange-100 text-orange-700' },
-  { value: 'digue_nord', label: 'Secteur Digue Nord (rouge)', badgeClass: 'bg-red-100 text-red-700' },
-  { value: 'nord', label: 'Secteur Nord (gris)', badgeClass: 'bg-gray-100 text-gray-700' },
+  { value: 'siege', label: 'Secteur Siège', badgeClass: 'bg-blue-100 text-blue-700' },
+  { value: 'clos_jacquet', label: 'Secteur Clos Jacquet', badgeClass: 'bg-green-100 text-green-700' },
+  { value: 'digue_sud', label: 'Secteur Digue Sud', badgeClass: 'bg-orange-100 text-orange-700' },
+  { value: 'digue_nord', label: 'Secteur Digue Nord', badgeClass: 'bg-red-100 text-red-700' },
+  { value: 'nord', label: 'Secteur Nord', badgeClass: 'bg-gray-100 text-gray-700' },
 ];
 
 const AdminParcellesPage: React.FC = () => {
@@ -84,10 +94,17 @@ const AdminParcellesPage: React.FC = () => {
     const compare = (a: Parcelle, b: Parcelle) => {
       const dir = sortDir === 'asc' ? 1 : -1;
 
-      if (sortKey === 'numero_parcelle' || sortKey === 'surface_m2') {
+      if (sortKey === 'surface_m2') {
         const va = Number(a[sortKey] ?? 0);
         const vb = Number(b[sortKey] ?? 0);
         return (va - vb) * dir;
+      }
+
+      if (sortKey === 'numero_parcelle') {
+        const pa = parseNumeroParcelleForSort(a.numero_parcelle);
+        const pb = parseNumeroParcelleForSort(b.numero_parcelle);
+        if (pa.num !== pb.num) return (pa.num - pb.num) * dir;
+        return pa.suffix.localeCompare(pb.suffix, 'fr') * dir;
       }
 
       const sa = String(a[sortKey] ?? '').toLocaleLowerCase();
@@ -98,15 +115,37 @@ const AdminParcellesPage: React.FC = () => {
     return list.sort(compare);
   }, [parcelles, sortKey, sortDir]);
 
+  const parcellesStats = useMemo(() => {
+    const totalM2 = parcelles
+      .map((p) => p.surface_m2)
+      .filter((v): v is number => typeof v === 'number' && Number.isFinite(v))
+      .reduce((sum, v) => sum + v, 0);
+
+    const totalAvecSurface = parcelles
+      .map((p) => p.surface_m2)
+      .filter((v): v is number => typeof v === 'number' && Number.isFinite(v)).length;
+
+    const avgM2Global = totalAvecSurface ? totalM2 / totalAvecSurface : null;
+
+    const bySecteur = SECTEURS.map((s) => {
+      const list = parcelles.filter((p) => p.secteur === s.value);
+      const count = list.length;
+      const sumM2 = list
+        .map((p) => p.surface_m2)
+        .filter((v): v is number => typeof v === 'number' && Number.isFinite(v))
+        .reduce((sum, v) => sum + v, 0);
+      const avgM2 = count ? sumM2 / count : null;
+      return { ...s, count, avgM2 };
+    });
+
+    return { totalM2, bySecteur, avgM2Global };
+  }, [parcelles]);
+
   const handleSave = async () => {
     setError(null);
     setSuccess(null);
 
-    const numeroParcelleValue = numeroParcelle.trim() ? Number(numeroParcelle) : null;
-    if (numeroParcelle.trim() && Number.isNaN(numeroParcelleValue)) {
-      setError('Le numéro de parcelle doit être un nombre.');
-      return;
-    }
+    const numeroParcelleValue = normalizeNumeroParcelle(numeroParcelle);
 
     const surfaceM2Value = surfaceM2.trim() ? Number(surfaceM2) : null;
     if (surfaceM2.trim() && Number.isNaN(surfaceM2Value)) {
@@ -115,7 +154,7 @@ const AdminParcellesPage: React.FC = () => {
     }
 
     const payload = {
-      numero_parcelle: numeroParcelleValue,
+      numero_parcelle: numeroParcelleValue ? numeroParcelleValue : null,
       surface_m2: surfaceM2Value,
       secteur: secteur || null,
     };
@@ -155,7 +194,7 @@ const AdminParcellesPage: React.FC = () => {
       return;
     }
 
-    const numero = (parcelleData as { numero_parcelle: number | null } | null)?.numero_parcelle ?? null;
+    const numero = (parcelleData as { numero_parcelle: string | null } | null)?.numero_parcelle ?? null;
 
     if (numero !== null && numero !== undefined) {
       const { error: unassignError } = await supabase
@@ -185,7 +224,7 @@ const AdminParcellesPage: React.FC = () => {
 
   const sortIndicator = (key: SortKey) => {
     if (sortKey !== key) return '';
-    return sortDir === 'asc' ? ' ▲' : ' ▼';
+    return sortDir === 'asc' ? '▲' : '▼';
   };
 
   const secteurBadge = (value: SecteurParcelle | null) => {
@@ -211,7 +250,7 @@ const AdminParcellesPage: React.FC = () => {
               className="w-full border px-3 py-2 rounded"
               value={numeroParcelle}
               onChange={(e) => setNumeroParcelle(e.target.value)}
-              placeholder="Ex: 12"
+              placeholder="Ex: 12 bis"
             />
           </div>
 
@@ -263,23 +302,80 @@ const AdminParcellesPage: React.FC = () => {
         ) : sortedParcelles.length === 0 ? (
           <p className="text-neutral-500">Aucune parcelle enregistrée.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+          <>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+              <div className="bg-neutral-50 border border-neutral-200 rounded-lg overflow-hidden">
+                <div className="p-4">
+                  <div className="text-sm font-semibold text-neutral-800">M² totaux exploités</div>
+                  <div className="text-2xl font-bold text-neutral-900 mt-1">{Math.round(parcellesStats.totalM2)}</div>
+                </div>
+                <div className="border-t border-neutral-200 p-4">
+                  <div className="text-sm font-semibold text-neutral-800">Moyenne m² / parcelle</div>
+                  <div className="text-2xl font-bold text-neutral-900 mt-1">
+                    {parcellesStats.avgM2Global === null ? '—' : Math.round(parcellesStats.avgM2Global)}
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4">
+                <div className="text-sm font-semibold text-neutral-800 mb-2">Parcelles par secteur</div>
+                <div className="space-y-2">
+                  {parcellesStats.bySecteur.map((s) => (
+                    <div key={s.value} className="flex items-center justify-between">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-semibold ${s.badgeClass}`}>{s.label}</span>
+                      <span className="text-sm font-semibold text-neutral-900">{s.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4">
+                <div className="text-sm font-semibold text-neutral-800 mb-2">Moyenne m² / secteur</div>
+                <div className="space-y-2">
+                  {parcellesStats.bySecteur.map((s) => (
+                    <div key={s.value} className="flex items-center justify-between">
+                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-semibold ${s.badgeClass}`}>{s.label}</span>
+                      <span className="text-sm font-semibold text-neutral-900">
+                        {s.avgM2 === null ? '—' : Math.round(s.avgM2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
               <thead>
                 <tr className="text-left border-b">
-                  <th className="py-2 pr-4">
-                    <button className="font-semibold" onClick={() => toggleSort('numero_parcelle')}>
-                      Parcelle{sortIndicator('numero_parcelle')}
+                  <th className="py-2 pr-2 md:pr-4">
+                    <button
+                      className="font-semibold flex flex-col items-start leading-none"
+                      onClick={() => toggleSort('numero_parcelle')}
+                    >
+                      <span className="text-[10px] h-3">{sortIndicator('numero_parcelle') || ' '}</span>
+                      <span>
+                        <span className="hidden md:inline">Parcelle</span>
+                        <span className="md:hidden">N°</span>
+                      </span>
                     </button>
                   </th>
-                  <th className="py-2 pr-4">
-                    <button className="font-semibold" onClick={() => toggleSort('surface_m2')}>
-                      Surface (m²){sortIndicator('surface_m2')}
+                  <th className="py-2 pr-2 md:pr-4">
+                    <button
+                      className="font-semibold flex flex-col items-start leading-none"
+                      onClick={() => toggleSort('surface_m2')}
+                    >
+                      <span className="text-[10px] h-3">{sortIndicator('surface_m2') || ' '}</span>
+                      <span>M²</span>
                     </button>
                   </th>
-                  <th className="py-2 pr-4">
-                    <button className="font-semibold" onClick={() => toggleSort('secteur')}>
-                      Secteur{sortIndicator('secteur')}
+                  <th className="py-2 pr-0 md:pr-4">
+                    <button
+                      className="font-semibold flex flex-col items-start leading-none"
+                      onClick={() => toggleSort('secteur')}
+                    >
+                      <span className="text-[10px] h-3">{sortIndicator('secteur') || ' '}</span>
+                      <span>Secteur</span>
                     </button>
                   </th>
                   <th className="py-2">Actions</th>
@@ -290,9 +386,9 @@ const AdminParcellesPage: React.FC = () => {
                   const badge = secteurBadge(parcelle.secteur);
                   return (
                     <tr key={parcelle.id} className="border-b last:border-0">
-                      <td className="py-2 pr-4 font-medium text-gray-900">{parcelle.numero_parcelle}</td>
-                      <td className="py-2 pr-4">{parcelle.surface_m2}</td>
-                      <td className="py-2 pr-4">
+                      <td className="py-2 pr-2 md:pr-4 font-medium text-gray-900">{parcelle.numero_parcelle}</td>
+                      <td className="py-2 pr-2 md:pr-4">{parcelle.surface_m2}</td>
+                      <td className="py-2 pr-0 md:pr-4">
                         {badge ? (
                           <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-semibold ${badge.badgeClass}`}>
                             {badge.label}
@@ -302,15 +398,37 @@ const AdminParcellesPage: React.FC = () => {
                         )}
                       </td>
                       <td className="py-2">
-                        <div className="flex gap-4">
-                          <button onClick={() => startEdit(parcelle)} className="text-blue-600 text-sm hover:underline">
+                        <div className="flex items-center gap-1 md:gap-4">
+                          <button
+                            onClick={() => startEdit(parcelle)}
+                            className="text-blue-600 text-sm hover:underline hidden md:inline"
+                          >
                             Modifier
                           </button>
                           <button
+                            type="button"
+                            onClick={() => startEdit(parcelle)}
+                            className="md:hidden p-1.5 text-blue-600 hover:text-blue-800"
+                            aria-label="Modifier"
+                            title="Modifier"
+                          >
+                            <Pencil size={18} />
+                          </button>
+
+                          <button
                             onClick={() => setConfirmDeleteId(parcelle.id)}
-                            className="text-red-600 text-sm hover:underline"
+                            className="text-red-600 text-sm hover:underline hidden md:inline"
                           >
                             Supprimer
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setConfirmDeleteId(parcelle.id)}
+                            className="md:hidden p-1.5 text-red-600 hover:text-red-800"
+                            aria-label="Supprimer"
+                            title="Supprimer"
+                          >
+                            <Trash2 size={18} />
                           </button>
                         </div>
                       </td>
@@ -320,6 +438,7 @@ const AdminParcellesPage: React.FC = () => {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </div>
 

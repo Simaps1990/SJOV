@@ -1,10 +1,56 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Link2Off, Pencil, Trash2 } from 'lucide-react';
 import { supabase } from '../../supabaseClient';
 import type { Jardinier, Parcelle, SecteurParcelle } from '../../types';
 
 type SortKey = 'nom' | 'numero_parcelle' | 'email' | 'telephone' | 'annee_naissance' | 'statut';
 
 type SortDir = 'asc' | 'desc';
+
+type ProgressRingProps = {
+  percent: number;
+  size?: number;
+  stroke?: number;
+  className?: string;
+};
+
+const ProgressRing: React.FC<ProgressRingProps> = ({ percent, size = 52, stroke = 6, className }) => {
+  const pct = Number.isFinite(percent) ? Math.max(0, Math.min(100, percent)) : 0;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference * (1 - pct / 100);
+
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className={className}>
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="transparent"
+          stroke="currentColor"
+          opacity={0.15}
+          strokeWidth={stroke}
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="transparent"
+          stroke="currentColor"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-xs font-semibold text-neutral-800">{Math.round(pct)}%</span>
+      </div>
+    </div>
+  );
+};
 
 const AdminJardiniersPage: React.FC = () => {
   const [jardiniers, setJardiniers] = useState<Jardinier[]>([]);
@@ -125,24 +171,39 @@ const AdminJardiniersPage: React.FC = () => {
     return parts.join(' - ');
   };
 
+  const normalizeNumeroParcelle = (value: string) => value.trim().replace(/\s+/g, ' ');
+
+  const parseNumeroParcelleForSort = (value: string | null) => {
+    const v = normalizeNumeroParcelle(value ?? '');
+    const m = v.match(/^(\d+)\s*(.*)$/);
+    if (!m) return { num: Number.POSITIVE_INFINITY, suffix: v.toLocaleLowerCase() };
+    return { num: Number(m[1]), suffix: (m[2] ?? '').trim().toLocaleLowerCase() };
+  };
+
   const parcellesDisponibles = useMemo(() => {
     const assigned = new Set(
       jardiniers
         .filter((j) => j.id !== editingId)
         .map((j) => j.numero_parcelle)
-        .filter((n): n is number => n !== null && n !== undefined)
+        .filter((n): n is string => n !== null && n !== undefined)
     );
 
     return parcelles
       .filter((p) => p.numero_parcelle !== null && p.numero_parcelle !== undefined)
-      .filter((p) => !assigned.has(p.numero_parcelle as number))
-      .sort((a, b) => Number(a.numero_parcelle) - Number(b.numero_parcelle));
+      .filter((p) => !assigned.has(p.numero_parcelle as string))
+      .sort((a, b) => {
+        const pa = parseNumeroParcelleForSort(a.numero_parcelle);
+        const pb = parseNumeroParcelleForSort(b.numero_parcelle);
+        if (pa.num !== pb.num) return pa.num - pb.num;
+        return pa.suffix.localeCompare(pb.suffix, 'fr');
+      });
   }, [parcelles, jardiniers, editingId]);
 
   const parcellesDisponiblesFiltrees = useMemo(() => {
-    const q = numeroParcelle.trim();
+    const q = normalizeNumeroParcelle(numeroParcelle);
     if (!q) return parcellesDisponibles;
-    return parcellesDisponibles.filter((p) => String(p.numero_parcelle ?? '').startsWith(q));
+    const ql = q.toLocaleLowerCase();
+    return parcellesDisponibles.filter((p) => String(p.numero_parcelle ?? '').toLocaleLowerCase().includes(ql));
   }, [numeroParcelle, parcellesDisponibles]);
 
   const currentEditingNumeroParcelle = useMemo(() => {
@@ -166,10 +227,17 @@ const AdminJardiniersPage: React.FC = () => {
     const compare = (a: Jardinier, b: Jardinier) => {
       const dir = sortDir === 'asc' ? 1 : -1;
 
-      if (sortKey === 'numero_parcelle' || sortKey === 'annee_naissance') {
+      if (sortKey === 'annee_naissance') {
         const va = Number(a[sortKey] ?? 0);
         const vb = Number(b[sortKey] ?? 0);
         return (va - vb) * dir;
+      }
+
+      if (sortKey === 'numero_parcelle') {
+        const pa = parseNumeroParcelleForSort(a.numero_parcelle);
+        const pb = parseNumeroParcelleForSort(b.numero_parcelle);
+        if (pa.num !== pb.num) return (pa.num - pb.num) * dir;
+        return pa.suffix.localeCompare(pb.suffix, 'fr') * dir;
       }
 
       const sa = String(a[sortKey] ?? '').toLocaleLowerCase();
@@ -180,17 +248,37 @@ const AdminJardiniersPage: React.FC = () => {
     return list.sort(compare);
   }, [jardiniers, sortKey, sortDir]);
 
+  const jardiniersStats = useMemo(() => {
+    const total = jardiniers.length;
+    const actifs = jardiniers.filter((j) => j.statut === 'actif').length;
+    const retraites = jardiniers.filter((j) => j.statut === 'retraite').length;
+
+    const nowYear = new Date().getFullYear();
+    const ages = jardiniers
+      .map((j) => j.annee_naissance)
+      .filter((y): y is number => typeof y === 'number' && Number.isFinite(y))
+      .map((y) => nowYear - y)
+      .filter((a) => a > 0 && a < 130);
+
+    const avgAge = ages.length ? ages.reduce((sum, a) => sum + a, 0) / ages.length : null;
+
+    return {
+      total,
+      actifs,
+      retraites,
+      pctActifs: total ? (actifs / total) * 100 : 0,
+      pctRetraites: total ? (retraites / total) * 100 : 0,
+      avgAge,
+    };
+  }, [jardiniers]);
+
   const handleSave = async () => {
     setError(null);
     setSuccess(null);
 
-    const numeroParcelleValue = numeroParcelle.trim() ? Number(numeroParcelle) : null;
-    if (numeroParcelle.trim() && Number.isNaN(numeroParcelleValue)) {
-      setError('Le numéro de parcelle doit être un nombre.');
-      return;
-    }
+    const numeroParcelleValue = normalizeNumeroParcelle(numeroParcelle);
 
-    if (numeroParcelleValue !== null && numeroParcelleValue !== undefined) {
+    if (numeroParcelleValue) {
       const existsInParcelles = parcelles.some((p) => p.numero_parcelle === numeroParcelleValue);
       const isAvailable = parcellesDisponibles.some((p) => p.numero_parcelle === numeroParcelleValue);
       const isCurrentEditing = currentEditingNumeroParcelle === numeroParcelleValue;
@@ -214,7 +302,7 @@ const AdminJardiniersPage: React.FC = () => {
 
     const payload = {
       nom: nom.trim() || null,
-      numero_parcelle: numeroParcelleValue,
+      numero_parcelle: numeroParcelleValue ? numeroParcelleValue : null,
       email: email.trim() || null,
       telephone: telephone.trim() || null,
       annee_naissance: anneeNaissanceValue,
@@ -285,7 +373,7 @@ const AdminJardiniersPage: React.FC = () => {
 
   const sortIndicator = (key: SortKey) => {
     if (sortKey !== key) return '';
-    return sortDir === 'asc' ? ' ▲' : ' ▼';
+    return sortDir === 'asc' ? '▲' : '▼';
   };
 
   const normalizeTel = (value: string) => value.trim().replace(/[^\d+]/g, '');
@@ -327,8 +415,7 @@ const AdminJardiniersPage: React.FC = () => {
                   setIsParcelleDropdownOpen(true);
                 }}
                 onFocus={() => setIsParcelleDropdownOpen(true)}
-                placeholder="Ex: 12"
-                inputMode="numeric"
+                placeholder="Ex: 12 bis"
               />
               <button
                 type="button"
@@ -428,34 +515,95 @@ const AdminJardiniersPage: React.FC = () => {
         ) : sortedJardiniers.length === 0 ? (
           <p className="text-neutral-500">Aucun jardinier enregistré.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+              <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-semibold text-neutral-800">Actifs</div>
+                  <div className="text-xs text-neutral-600">
+                    {jardiniersStats.actifs}/{jardiniersStats.total}
+                  </div>
+                </div>
+                <ProgressRing percent={jardiniersStats.pctActifs} className="text-green-600" />
+              </div>
+
+              <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-semibold text-neutral-800">Retraités</div>
+                  <div className="text-xs text-neutral-600">
+                    {jardiniersStats.retraites}/{jardiniersStats.total}
+                  </div>
+                </div>
+                <ProgressRing percent={jardiniersStats.pctRetraites} className="text-orange-600" />
+              </div>
+
+              <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4 flex items-center justify-between">
+                <div>
+                  <div className="text-sm font-semibold text-neutral-800">Âge moyen</div>
+                  <div className="text-xs text-neutral-600">(sur les dates renseignées)</div>
+                </div>
+                <div className="text-2xl font-bold text-neutral-800">
+                  {jardiniersStats.avgAge === null ? '—' : Math.round(jardiniersStats.avgAge)}
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
               <thead>
                 <tr className="text-left border-b">
-                  <th className="py-2 pr-4">
-                    <button className="font-semibold" onClick={() => toggleSort('nom')}>Nom{sortIndicator('nom')}</button>
-                  </th>
-                  <th className="py-2 pr-4">
-                    <button className="font-semibold" onClick={() => toggleSort('numero_parcelle')}>
-                      Parcelle{sortIndicator('numero_parcelle')}
+                  <th className="py-2 pr-2 md:pr-4">
+                    <button
+                      className="font-semibold flex flex-col items-start leading-none"
+                      onClick={() => toggleSort('nom')}
+                    >
+                      <span className="text-[10px] h-3">{sortIndicator('nom') || ' '}</span>
+                      <span>Nom</span>
                     </button>
                   </th>
-                  <th className="py-2 pr-4">
-                    <button className="font-semibold" onClick={() => toggleSort('email')}>Email{sortIndicator('email')}</button>
-                  </th>
-                  <th className="py-2 pr-4">
-                    <button className="font-semibold" onClick={() => toggleSort('telephone')}>
-                      Téléphone{sortIndicator('telephone')}
+                  <th className="py-2 pr-2 md:pr-4">
+                    <button
+                      className="font-semibold flex flex-col items-start leading-none"
+                      onClick={() => toggleSort('numero_parcelle')}
+                    >
+                      <span className="text-[10px] h-3">{sortIndicator('numero_parcelle') || ' '}</span>
+                      <span>Parcelle</span>
                     </button>
                   </th>
-                  <th className="py-2 pr-4">
-                    <button className="font-semibold" onClick={() => toggleSort('annee_naissance')}>
-                      Naissance{sortIndicator('annee_naissance')}
+                  <th className="py-2 pr-2 md:pr-4">
+                    <button
+                      className="font-semibold flex flex-col items-start leading-none"
+                      onClick={() => toggleSort('email')}
+                    >
+                      <span className="text-[10px] h-3">{sortIndicator('email') || ' '}</span>
+                      <span>Email</span>
                     </button>
                   </th>
-                  <th className="py-2 pr-4">
-                    <button className="font-semibold" onClick={() => toggleSort('statut')}>
-                      Statut{sortIndicator('statut')}
+                  <th className="py-2 pr-2 md:pr-4">
+                    <button
+                      className="font-semibold flex flex-col items-start leading-none"
+                      onClick={() => toggleSort('telephone')}
+                    >
+                      <span className="text-[10px] h-3">{sortIndicator('telephone') || ' '}</span>
+                      <span>Téléphone</span>
+                    </button>
+                  </th>
+                  <th className="py-2 pr-2 md:pr-4">
+                    <button
+                      className="font-semibold flex flex-col items-start leading-none"
+                      onClick={() => toggleSort('annee_naissance')}
+                    >
+                      <span className="text-[10px] h-3">{sortIndicator('annee_naissance') || ' '}</span>
+                      <span>Naissance</span>
+                    </button>
+                  </th>
+                  <th className="py-2 pr-2 md:pr-4">
+                    <button
+                      className="font-semibold flex flex-col items-start leading-none"
+                      onClick={() => toggleSort('statut')}
+                    >
+                      <span className="text-[10px] h-3">{sortIndicator('statut') || ' '}</span>
+                      <span>Statut</span>
                     </button>
                   </th>
                   <th className="py-2">Actions</th>
@@ -464,9 +612,29 @@ const AdminJardiniersPage: React.FC = () => {
               <tbody>
                 {sortedJardiniers.map((jardinier) => (
                   <tr key={jardinier.id} className="border-b last:border-0">
-                    <td className="py-2 pr-4 font-medium text-gray-900">{jardinier.nom ?? ''}</td>
-                    <td className="py-2 pr-4">{jardinier.numero_parcelle ?? ''}</td>
-                    <td className="py-2 pr-4">
+                    <td className="py-2 pr-2 md:pr-4 font-medium text-gray-900">{jardinier.nom ?? ''}</td>
+                    <td className="py-2 pr-2 md:pr-4">
+                      <div className="flex items-center gap-1">
+                        <span>{jardinier.numero_parcelle ?? ''}</span>
+                        {jardinier.numero_parcelle !== null && jardinier.numero_parcelle !== undefined && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const ok = window.confirm(
+                                `Retirer la parcelle ${jardinier.numero_parcelle} de ${jardinier.nom ?? 'ce jardinier'} ?`
+                              );
+                              if (ok) handleUnassignParcelle(jardinier);
+                            }}
+                            className="text-orange-600 hover:text-orange-800 p-1"
+                            aria-label="Retirer la parcelle"
+                            title="Retirer la parcelle"
+                          >
+                            <Link2Off size={18} />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-2 pr-2 md:pr-4">
                       {jardinier.email ? (
                         <button
                           type="button"
@@ -479,7 +647,7 @@ const AdminJardiniersPage: React.FC = () => {
                         ''
                       )}
                     </td>
-                    <td className="py-2 pr-4">
+                    <td className="py-2 pr-2 md:pr-4">
                       {jardinier.telephone ? (
                         <button
                           type="button"
@@ -492,33 +660,29 @@ const AdminJardiniersPage: React.FC = () => {
                         ''
                       )}
                     </td>
-                    <td className="py-2 pr-4">{jardinier.annee_naissance ?? ''}</td>
-                    <td className="py-2 pr-4">
+                    <td className="py-2 pr-2 md:pr-4">{jardinier.annee_naissance ?? ''}</td>
+                    <td className="py-2 pr-2 md:pr-4">
                       {jardinier.statut === 'actif' ? 'Actif' : jardinier.statut === 'retraite' ? 'Retraité' : ''}
                     </td>
                     <td className="py-2">
-                      <div className="flex gap-4">
-                        <button onClick={() => startEdit(jardinier)} className="text-blue-600 text-sm hover:underline">
-                          Modifier
-                        </button>
-                        {jardinier.numero_parcelle !== null && jardinier.numero_parcelle !== undefined && (
-                          <button
-                            onClick={() => {
-                              const ok = window.confirm(
-                                `Retirer la parcelle ${jardinier.numero_parcelle} de ${jardinier.nom ?? 'ce jardinier'} ?`
-                              );
-                              if (ok) handleUnassignParcelle(jardinier);
-                            }}
-                            className="text-orange-600 text-sm hover:underline"
-                          >
-                            Retirer parcelle
-                          </button>
-                        )}
+                      <div className="flex items-center gap-1 md:gap-2">
                         <button
-                          onClick={() => setConfirmDeleteId(jardinier.id)}
-                          className="text-red-600 text-sm hover:underline"
+                          type="button"
+                          onClick={() => startEdit(jardinier)}
+                          className="p-1.5 text-blue-600 hover:text-blue-800"
+                          aria-label="Modifier"
+                          title="Modifier"
                         >
-                          Supprimer
+                          <Pencil size={18} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setConfirmDeleteId(jardinier.id)}
+                          className="p-1.5 text-red-600 hover:text-red-800"
+                          aria-label="Supprimer"
+                          title="Supprimer"
+                        >
+                          <Trash2 size={18} />
                         </button>
                       </div>
                     </td>
@@ -527,6 +691,7 @@ const AdminJardiniersPage: React.FC = () => {
               </tbody>
             </table>
           </div>
+          </>
         )}
       </div>
 
