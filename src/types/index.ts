@@ -93,6 +93,7 @@ export interface Parcelle {
   numero_parcelle: string | null;
   surface_m2: number | null;
   secteur: SecteurParcelle | null;
+  electricite: boolean | null;
   created_at?: string;
 }
 

@@ -36,6 +36,7 @@ const AdminParcellesPage: React.FC = () => {
   const [numeroParcelle, setNumeroParcelle] = useState('');
   const [surfaceM2, setSurfaceM2] = useState('');
   const [secteur, setSecteur] = useState<SecteurParcelle | ''>('');
+  const [electricite, setElectricite] = useState<boolean | null>(null);
 
   const [sortKey, setSortKey] = useState<SortKey>('numero_parcelle');
   const [sortDir, setSortDir] = useState<SortDir>('asc');
@@ -67,6 +68,7 @@ const AdminParcellesPage: React.FC = () => {
     setNumeroParcelle('');
     setSurfaceM2('');
     setSecteur('');
+    setElectricite(null);
     setError(null);
     setSuccess(null);
   };
@@ -76,6 +78,7 @@ const AdminParcellesPage: React.FC = () => {
     setNumeroParcelle(parcelle.numero_parcelle !== null && parcelle.numero_parcelle !== undefined ? String(parcelle.numero_parcelle) : '');
     setSurfaceM2(parcelle.surface_m2 !== null && parcelle.surface_m2 !== undefined ? String(parcelle.surface_m2) : '');
     setSecteur((parcelle.secteur as SecteurParcelle) || '');
+    setElectricite(parcelle.electricite ?? null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -158,6 +161,7 @@ const AdminParcellesPage: React.FC = () => {
       numero_parcelle: numeroParcelleValue ? numeroParcelleValue : null,
       surface_m2: surfaceM2Value,
       secteur: secteur || null,
+      electricite: electricite ?? false,
     };
 
     if (editingId) {
@@ -280,6 +284,18 @@ const AdminParcellesPage: React.FC = () => {
               ))}
             </select>
           </div>
+          <div className="flex items-center pt-6 space-x-2">
+            <input
+              id="parcelle-electricite"
+              type="checkbox"
+              className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+              checked={!!electricite}
+              onChange={(e) => setElectricite(e.target.checked)}
+            />
+            <label htmlFor="parcelle-electricite" className="text-sm font-medium text-gray-700">
+              Équipée d'électricité
+            </label>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-3 pt-2">
@@ -370,6 +386,11 @@ const AdminParcellesPage: React.FC = () => {
                       <span className="w-3 text-[10px] leading-none">{sortIndicator('surface_m2') || ''}</span>
                     </button>
                   </th>
+                  <th className="py-2 pr-2 md:pr-4">
+                    <span className="font-semibold inline-flex items-center gap-1 leading-none">
+                      <span className="leading-none">Electricité</span>
+                    </span>
+                  </th>
                   <th className="py-2 pr-0 md:pr-4">
                     <button
                       className="font-semibold inline-flex items-center gap-1 leading-none"
@@ -394,6 +415,7 @@ const AdminParcellesPage: React.FC = () => {
                     <tr key={parcelle.id} className="border-b last:border-0">
                       <td className="py-2 pr-2 md:pr-4 font-medium text-gray-900">{parcelle.numero_parcelle}</td>
                       <td className="py-2 pr-2 md:pr-4">{parcelle.surface_m2}</td>
+                      <td className="py-2 pr-2 md:pr-4">{parcelle.electricite ? 'OUI' : 'NON'}</td>
                       <td className="py-2 pr-0 md:pr-4">
                         {badge ? (
                           <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-semibold ${badge.badgeClass}`}>
