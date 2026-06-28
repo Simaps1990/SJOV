@@ -12,7 +12,7 @@ const AnnonceCard: React.FC<AnnonceCardProps> = ({ annonce }) => {
     <article className="card group transition-all duration-300 h-full hover:-translate-y-1 hover:shadow-lg">
       {/* Image principale (photo1) */}
       {annonce.photo1 && (
-        <div className="relative overflow-hidden h-48">
+        <div className="relative overflow-hidden h-48 rounded-t-lg">
           <img
             src={annonce.photo1}
             alt={annonce.nom}

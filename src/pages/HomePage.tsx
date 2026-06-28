@@ -135,7 +135,7 @@ const HomePage: React.FC = () => {
           meteoVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
         }`}
       >
-        <section className="pt-16 px-4 md:px-6 bg-neutral-50">
+        <section className="pt-16 pb-4 px-4 md:px-6 bg-neutral-50">
           <MeteoConseilsSection />
         </section>
       </div>
@@ -147,7 +147,7 @@ const HomePage: React.FC = () => {
           blogVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
         }`}
       >
-        <section className="pt-16 px-4 md:px-6 bg-neutral-50">
+        <section className="pt-16 pb-8 px-4 md:px-6 bg-neutral-50">
           <div className="container-custom">
             <div className="flex justify-between items-center mb-3">
               <Link to="/blog" className="text-3xl font-heading font-bold no-underline hover:no-underline">
@@ -177,7 +177,7 @@ const HomePage: React.FC = () => {
           eventsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
         }`}
       >
-        <section className="pt-16 px-4 md:px-6 bg-neutral-50">
+        <section className="pt-16 pb-8 px-4 md:px-6 bg-neutral-50">
           <div className="container-custom">
             <div className="flex justify-between items-center">
               <Link to="/events" className="text-3xl font-heading font-bold">

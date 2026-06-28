@@ -15,7 +15,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, isFeature = false }) => {
   to={`/events/${event.id}`}
   className={`card group transition-all duration-300 block hover:-translate-y-1 hover:shadow-lg ${event.isPast ? 'opacity-80' : ''}`}
 >
-      <div className="relative overflow-hidden h-48">
+      <div className="relative overflow-hidden h-48 rounded-t-lg">
         <img
           src={event.image ?? '/placeholder.jpg'}
           alt={event.title}

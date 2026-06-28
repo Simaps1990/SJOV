@@ -62,7 +62,7 @@
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-card overflow-hidden transition-shadow duration-200 hover:shadow-card-hover;
+    @apply bg-white rounded-lg shadow-card transition-shadow duration-200 hover:shadow-card-hover;
   }
   
   .form-input {

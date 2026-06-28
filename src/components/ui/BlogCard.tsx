@@ -39,7 +39,9 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, isFeature = false }) => {
       {/* Image principale */}
 <div
   className={`relative overflow-hidden ${
-    isFeature ? 'md:w-2/5 h-64' : 'h-64'
+    isFeature
+      ? 'md:w-2/5 h-64 rounded-tl-lg rounded-tr-lg md:rounded-tr-none md:rounded-bl-lg'
+      : 'h-64 rounded-t-lg'
   }`}
 >
   <img
