@@ -4,8 +4,9 @@ import { supabase } from '../supabaseClient';
 import { useEffect } from 'react';
 import { useNotifications } from '../context/NotificationsContext';
 import { useLocation } from 'react-router-dom';
-import { renderAnnonceType } from '../constants/annonceTypes'; // ajuste le chemin si besoin
+import { renderAnnonceType } from '../constants/annonceTypes';
 import SEO from '../components/SEO';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 
 
@@ -15,20 +16,13 @@ const uploadToCloudinary = async (file: File): Promise<string | null> => {
 formData.append('upload_preset', 'site_global_uploads');
 
   try {
-    console.log('📤 Envoi Cloudinary :', {
-  fileName: file.name,
-  size: file.size,
-  type: file.type,
-});
-const res = await fetch('https://api.cloudinary.com/v1_1/da2pceyci/image/upload', {
+    const res = await fetch('https://api.cloudinary.com/v1_1/da2pceyci/image/upload', {
   method: 'POST',
   headers: {
     Accept: 'application/json',
   },
   body: formData,
 });
-
-console.log("📥 Cloudinary Response Status:", res.status);
 
     const data = await res.json();
 
@@ -111,6 +105,9 @@ const visibleAnnonces = sortedAnnonces.filter(
   (a) => selectedTypes.length === 0 || selectedTypes.includes(a.type)
 );
 
+const { ref: headerRef, isVisible: headerVisible } = useScrollReveal();
+const { ref: gridRef, isVisible: gridVisible } = useScrollReveal();
+
 const photo1Ref = useRef<HTMLInputElement>(null);
 const photo2Ref = useRef<HTMLInputElement>(null);
 const [fullscreenImage, setFullscreenImage] = useState<{ current: string; next?: string } | null>(null);
@@ -133,10 +130,6 @@ if (!captcha || captcha.value.trim().toLowerCase() !== 'sjov') {
 }
 const photo1Url = formData.photo1 ? await uploadToCloudinary(formData.photo1) : '';
 const photo2Url = formData.photo2 ? await uploadToCloudinary(formData.photo2) : '';
-
-console.log("Photo 1 URL =>", photo1Url);
-console.log("Photo 2 URL =>", photo2Url);
-
 
 const { error } = await supabase.from('annonces').insert([{
   nom: formData.nom,
@@ -193,6 +186,12 @@ useEffect(() => {
         keywords="jardins familiaux, jardin familiaux, les jardins familiaux, association jardins, association des jardins familiaux, jardin ouvrier, jardin familial, fnjfc, jardin communal, mon jardins, jardin partagé autour de moi, jardins collectifs, jardins ouvriers, demande jardins familiaux, jardinons a l'ecole, jardiner a paris, jardin solidaire, jardin partagé, jardins partages, jardin communale, potager collectif, jardin collectif, les jardins partagés, jardin communautaire, jardin en partage, jardin commun, législation jardins partagés, jardin locatif, jardins participatifs, annonces jardinage, échange plants, vente matériel jardinage, dons graines, SJOV, Société des Jardins Ouvriers de Villeurbanne, Villeurbanne, 69100, Rhône-Alpes, Lyon, bénévolat, troc plantes"
       />
       <div className="container-custom">
+      <div
+        ref={headerRef}
+        className={`transition-all duration-700 ease-out ${
+          headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+        }`}
+      >
 <h1 className="font-heading font-bold text-4xl mb-2">Les petites annonces</h1>
 
 <p className="text-neutral-600 text-lg mb-4">
@@ -233,14 +232,14 @@ className={`flex items-center gap-2 px-4 py-2 rounded transition ${
   PUBLIER UNE ANNONCE
 </a>
 </div>
-
-
+</div>
 
         {/* Liste des annonces */}
+        <div ref={gridRef}>
         {sortedAnnonces.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-{visibleAnnonces.map((post) => (
-<div key={post.id} id={`annonce-${post.id}`} className="border rounded-lg p-4 bg-white shadow">
+{visibleAnnonces.map((post, index) => (
+<div key={post.id} id={`annonce-${post.id}`} className={`border rounded-lg p-4 bg-white shadow transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${gridVisible ? 'animate-fade-up' : 'opacity-0'}`} style={{ animationDelay: `${index * 60}ms` }}>
 <p className="text-sm text-neutral-400 mb-1">
   {post.created_at ? new Date(post.created_at).toLocaleDateString() : 'Date inconnue'}
 </p>
@@ -280,6 +279,7 @@ className={`flex items-center gap-2 px-4 py-2 rounded transition ${
         ) : (
           <p className="text-neutral-500 text-center">Aucune annonce pour le moment.</p>
         )}
+        </div>
 
                 {/* Formulaire de soumission */}
 <h2 id="poster" className="text-2xl font-heading font-semibold mt-16 mb-4">

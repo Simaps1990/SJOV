@@ -30,7 +30,7 @@ export const NotificationsProvider: React.FC<{ children: React.ReactNode }> = ({
     } else {
       // Si aucun nombre n'est fourni, récupérer depuis le localStorage
       const data = JSON.parse(localStorage.getItem('applications') || '[]');
-      const nonTraiteesCount = data.filter((d: any) => !d.processed && !d.archived).length;
+      const nonTraiteesCount = data.filter((d: { processed?: boolean; archived?: boolean }) => !d.processed && !d.archived).length;
       setNonTraitees(nonTraiteesCount);
     }
   };

@@ -9,7 +9,7 @@ interface AnnonceCardProps {
 
 const AnnonceCard: React.FC<AnnonceCardProps> = ({ annonce }) => {
   return (
-    <article className="card group transition-all duration-300 h-full">
+    <article className="card group transition-all duration-300 h-full hover:-translate-y-1 hover:shadow-lg">
       {/* Image principale (photo1) */}
       {annonce.photo1 && (
         <div className="relative overflow-hidden h-48">

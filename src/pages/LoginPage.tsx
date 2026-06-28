@@ -5,20 +5,16 @@ import { Lock } from 'lucide-react';
 import SEO from '../components/SEO';
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { user, loading, login } = useAuth();
   const navigate = useNavigate();
 
-  console.log('LoginPage - user:', user, 'loading:', loading);
-
-  // Affiche un message de chargement pendant la récupération du user
   if (loading) {
     return <div>Chargement...</div>;
   }
 
-  // Redirection simple si user est déjà connecté
   if (user) {
     return <Navigate to="/admin" replace />;
   }
@@ -27,12 +23,12 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setError('');
 
-    if (!username || !password) {
+    if (!email || !password) {
       setError('Veuillez remplir tous les champs');
       return;
     }
 
-    const success = await login(username, password);
+    const success = await login(email, password);
 
     if (success) {
       navigate('/admin');
@@ -69,16 +65,16 @@ const LoginPage: React.FC = () => {
 
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor="username" className="form-label">
-                  Identifiant
+                <label htmlFor="email" className="form-label">
+                  Email
                 </label>
                 <input
-                  type="text"
-                  id="username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="form-input"
-                  autoComplete="username"
+                  autoComplete="email"
                 />
               </div>
 

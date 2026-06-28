@@ -1,6 +1,7 @@
 import React from 'react';
 import { useContent } from '../context/ContentContext';
 import SEO from '../components/SEO';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const AssociationPage: React.FC = () => {
   const { associationContent } = useContent();
@@ -36,6 +37,10 @@ if (!titreAssociation && !contentAssociation && images.length === 0) {
 }
 
 
+  const { ref: headerRef, isVisible: headerVisible } = useScrollReveal();
+  const { ref: contentRef, isVisible: contentVisible } = useScrollReveal();
+  const { ref: imagesRef, isVisible: imagesVisible } = useScrollReveal();
+
   return (
     <div className="pb-16">
       <SEO 
@@ -64,14 +69,26 @@ if (!titreAssociation && !contentAssociation && images.length === 0) {
         })}
       </script>
       <div className="container-custom">
-        <h1 className="font-heading font-bold text-4xl mb-2">
-          {titreAssociation || "Notre association"}
-        </h1>
-        <p className="text-neutral-600 text-lg mb-8">
-          Découvrez l'histoire et les valeurs de notre association de bénévoles.
-        </p>
+        <div
+          ref={headerRef}
+          className={`transition-all duration-700 ease-out ${
+            headerVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
+          <h1 className="font-heading font-bold text-4xl mb-2">
+            {titreAssociation || "Notre association"}
+          </h1>
+          <p className="text-neutral-600 text-lg mb-8">
+            Découvrez l'histoire et les valeurs de notre association de bénévoles.
+          </p>
+        </div>
 
-        <div className="mb-10">
+        <div
+          ref={contentRef}
+          className={`mb-10 transition-all duration-700 ease-out ${
+            contentVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
           {!contentAssociation && (
             <div className="prose prose-lg max-w-none">
               <h2 className="text-2xl font-semibold mb-4">Notre association de bénévoles à Villeurbanne et Vaulx-en-Velin</h2>
@@ -95,6 +112,12 @@ if (!titreAssociation && !contentAssociation && images.length === 0) {
             />
           )}
         </div>
+        <div
+          ref={imagesRef}
+          className={`transition-all duration-700 ease-out ${
+            imagesVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+          }`}
+        >
         {images.length > 0 && (
           <div className={`grid gap-6 ${getImageGridClass()}`}>
             {images
@@ -110,6 +133,7 @@ if (!titreAssociation && !contentAssociation && images.length === 0) {
               ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   );

@@ -22,7 +22,7 @@ import ApplyPage from './pages/ApplyPage';
 import ContactPage from './pages/ContactPage';
 import SearchPage from './pages/SearchPage';
 import LoginPage from './pages/LoginPage';
-import AnnoncesPage from './pages/Annonces'; // ✅ Import correct
+import AnnoncesPage from './pages/Annonces';
 import MentionsLegalesPage from './pages/MentionsLegalesPage';
 
 // Admin Pages
@@ -101,7 +101,7 @@ function App() {
               <Route path="jardiniers" element={<AdminJardiniersPage />} />
               <Route path="parcelles" element={<AdminParcellesPage />} />
               <Route path="settings" element={<AdminSettingsPage />} />
-              <Route path="annonces" element={<AdminAnnoncesPage />} /> {/* ❗ AJOUT ICI */}
+              <Route path="annonces" element={<AdminAnnoncesPage />} />
             </Route>
 
             {/* Catch-all */}

@@ -32,7 +32,7 @@ const getTextExcerpt = (html: string, maxLength: number = 150): string => {
 const BlogCard: React.FC<BlogCardProps> = ({ post, isFeature = false }) => {
   return (
     <article
-      className={`card group transition-all duration-300 h-full ${
+      className={`card group transition-all duration-300 h-full hover:-translate-y-1 hover:shadow-lg ${
         isFeature ? 'md:flex' : ''
       }`}
     >

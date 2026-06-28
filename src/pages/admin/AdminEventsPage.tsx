@@ -28,6 +28,7 @@ const fileInputRef = useRef<HTMLInputElement | null>(null);
 
 useEffect(() => {
   refreshGlobalEvents();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
 
@@ -77,15 +78,6 @@ setCoverUrl(null);
 
 const imageToSave = coverUrl ?? '';
 
-console.log('DEBUG - Champs transmis à Supabase :', {
-  title,
-  description,
-  location,
-  start,
-  enddate,
-  content: content,
-image: imageToSave,
-});
 const finalImage = coverUrl || '';
 const sanitizedAnnexes = imagesannexesUrls.map((url) =>
   url && !url.startsWith('blob:') ? url : null

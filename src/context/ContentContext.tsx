@@ -98,7 +98,6 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         console.error('Erreur de chargement de l\'association :', error.message);
         return;
       }
-      console.log("✅ Données association_content chargées :", JSON.stringify(data, null, 2));
 
       setAssociationContent({
         id: data?.id || '',
@@ -124,6 +123,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   useEffect(() => {
     fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -166,10 +166,12 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   useEffect(() => {
     fetchBlogPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     fetchAnnonces();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Fonction améliorée pour ajouter un article de blog
@@ -184,8 +186,6 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         date: new Date().toISOString().split('T')[0],
       };
       
-      console.log('Ajout article avec données sanitisées:', sanitizedPost);
-      
       const { data, error } = await supabase
         .from('blogPosts')
         .insert([sanitizedPost])
@@ -197,12 +197,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
 
       const saved = data?.[0];
-      if (!saved) {
-        console.warn('Aucune donnée retournée après insertion');
-        return;
-      }
-      
-      console.log('Article sauvegardé avec succès:', saved);
+      if (!saved) return;
 
       setBlogPosts((prev) => {
         const filtered = prev.filter(p => p.id !== saved.id);
@@ -221,33 +216,21 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       
       // S'assurer que imagesannexes est un tableau non-null si présent
       if (sanitizedPost.imagesannexes !== undefined) {
-        console.log('Images annexes avant sanitisation:', sanitizedPost.imagesannexes);
-        
-        // Vérifier si le tableau contient des valeurs null
         if (Array.isArray(sanitizedPost.imagesannexes)) {
-          // Si le tableau est vide ou contient uniquement des valeurs null, le remplacer par un tableau vide
-          // car Supabase ne gère pas bien les tableaux avec uniquement des valeurs null
           if (sanitizedPost.imagesannexes.length === 0) {
-            console.log('Tableau d\'images annexes vide, on garde un tableau vide');
             sanitizedPost.imagesannexes = [];
           } else {
             const hasNonNullValues = sanitizedPost.imagesannexes.some(url => url !== null && url !== undefined);
             if (!hasNonNullValues) {
-              console.log('Aucune image annexe valide, envoi d\'un tableau vide');
               sanitizedPost.imagesannexes = [];
             } else {
-              // Filtrer les valeurs null pour éviter les problèmes avec Supabase
               sanitizedPost.imagesannexes = sanitizedPost.imagesannexes.filter(url => url !== null && url !== undefined);
-              console.log('Images annexes après filtrage des null:', sanitizedPost.imagesannexes);
             }
           }
         } else {
-          console.log('Format invalide pour imagesannexes, envoi d\'un tableau vide');
           sanitizedPost.imagesannexes = [];
         }
       }
-      
-      console.log(`Mise à jour article ${id} avec données sanitisées:`, sanitizedPost);
       
       const { data, error } = await supabase
         .from('blogPosts')
@@ -261,12 +244,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
 
       const updated = data?.[0];
-      if (!updated) {
-        console.warn('Aucune donnée retournée après mise à jour');
-        return;
-      }
-      
-      console.log('Article mis à jour avec succès:', updated);
+      if (!updated) return;
 
       setBlogPosts((prev) =>
         prev.map((p) => (p.id === id ? updated : p))
@@ -423,7 +401,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return;
     }
 
-    const mappedContent: any = {
+    const mappedContent: Record<string, unknown> = {
       ...(updatedContent.titreAccueil !== undefined && { titreaccueil: updatedContent.titreAccueil }),
       ...(updatedContent.texteIntro !== undefined && { texteintro: updatedContent.texteIntro }),
       ...(updatedContent.texteFooter !== undefined && { textefooter: updatedContent.texteFooter }),
@@ -439,8 +417,6 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       ...(updatedContent.horaires !== undefined && { horaires: updatedContent.horaires }),
       ...(updatedContent.imagesAssociation !== undefined && { imagesassociation: updatedContent.imagesAssociation }),
     };
-
-    console.log('🟡 mappedContent envoyé à Supabase :', JSON.stringify(mappedContent, null, 2));
 
     const { error } = await supabase
       .from('association_content')
@@ -499,20 +475,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
 
     if (!data || data.length === 0) {
-      console.warn('⚠️ Aucun article de blog reçu.');
       setBlogPosts([]);
       return;
     }
-
-    // Afficher les données brutes pour déboguer
-    console.log('🔍 Données brutes des articles:', data);
-    
-    // Vérifier les champs d'image pour chaque article
-    data.forEach((post, index) => {
-      console.log(`🖼️ Article ${index + 1} - Titre: ${post.title}`);
-      console.log(`   Image principale: ${post.image || 'MANQUANTE'}`);
-      console.log(`   Images annexes: ${JSON.stringify(post.imagesannexes || [])}`);
-    });
 
     // Normaliser les données pour s'assurer que tous les champs sont correctement formatés
     const normalizedData = data.map(post => ({
@@ -521,11 +486,10 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       image: post.image || '',
       // S'assurer que imagesannexes est toujours un tableau valide
       imagesannexes: Array.isArray(post.imagesannexes) 
-        ? post.imagesannexes.filter((url: any) => url !== null && url !== undefined && url !== '') 
+        ? post.imagesannexes.filter((url: string | null | undefined) => url !== null && url !== undefined && url !== '')
         : []
     }));
 
-    console.log('✅ Blog posts chargés et normalisés :', normalizedData);
     setBlogPosts(normalizedData);
   };
 
@@ -590,8 +554,6 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (error) return console.error('Erreur suppression annonce :', error.message);
     setAnnonces((prev) => prev.filter((a) => a.id !== id));
   };
-
-  console.log("Annonces récupérées depuis le contexte :", annonces);
 
   return (
     <ContentContext.Provider

@@ -3,6 +3,13 @@ import { BlogPost } from '../../types';
 import { useContent } from '../../context/ContentContext';
 import RichTextEditor from '../../components/RichTextEditor';
 
+declare global {
+  interface Window {
+    lastUploadedCoverImage: string;
+    lastUploadedImageUrl: string;
+  }
+}
+
 const AdminBlogPage = () => {
 
 const {
@@ -12,7 +19,6 @@ const {
   fetchBlogPosts,
   deleteBlogPost // 
 } = useContent();
-console.log(" blogPosts dans AdminBlogPage :", blogPosts);
 
   const [imagesannexesFiles, setImagesannexesFiles] = useState<(File | null)[]>([null, null, null]);
   const [imagesannexesUrls, setImagesannexesUrls] = useState<(string | null)[]>([null, null, null]);
@@ -28,8 +34,8 @@ console.log(" blogPosts dans AdminBlogPage :", blogPosts);
 
   // Variable globale pour stocker l'URL de l'image uploadée (persiste entre les rendus)
   // Cette variable sera utilisée dans handleImageChange et handleSubmit
-  if (typeof window !== 'undefined' && !(window as any).lastUploadedCoverImage) {
-    (window as any).lastUploadedCoverImage = '';
+  if (typeof window !== 'undefined' && !window.lastUploadedCoverImage) {
+    window.lastUploadedCoverImage = '';
   }
 
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
@@ -40,6 +46,7 @@ const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
 useEffect(() => {
   fetchBlogPosts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
 useEffect(() => {
@@ -255,8 +262,8 @@ useEffect(() => {
   // Variable globale pour stocker l'URL de l'image de couverture en dehors du composant
 // pour éviter qu'elle ne soit réinitialisée à chaque rendu
 if (typeof window !== 'undefined') {
-  if (!(window as any).lastUploadedImageUrl) {
-    (window as any).lastUploadedImageUrl = '';
+  if (!window.lastUploadedImageUrl) {
+    window.lastUploadedImageUrl = '';
   }
 }
 
@@ -280,8 +287,6 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     formData.append('file', file);
     formData.append('upload_preset', 'site_global_uploads');
 
-    console.log("Début de l'upload de l'image de couverture...");
-    
     const res = await fetch('https://api.cloudinary.com/v1_1/da2pceyci/image/upload', {
       method: 'POST',
       body: formData,
@@ -297,12 +302,11 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       const secureUrl = data.secure_url;
       
       // Stocker l'URL dans la variable globale sur window
-      (window as any).lastUploadedCoverImage = secureUrl;
+      window.lastUploadedCoverImage = secureUrl;
       
       // Mettre à jour l'état React
       setUploadedImageUrl(secureUrl);
-      console.log("✅ Image de couverture uploadée avec succès:", secureUrl);
-      
+
       // Effacer le message d'erreur/attente
       setError('');
       
@@ -318,7 +322,7 @@ const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setImage(null);
     setPreviewUrl('');
     setUploadedImageUrl('');
-    (window as any).lastUploadedCoverImage = '';
+    window.lastUploadedCoverImage = '';
     const fileInput = document.getElementById('blog-image') as HTMLInputElement | null;
     if (fileInput) fileInput.value = '';
     
@@ -342,13 +346,7 @@ const handleSubmit = async () => {
 
   // Vérifier que l'image de couverture est présente
   // Utiliser la variable globale sur window comme source fiable
-  let finalImageUrl = uploadedImageUrl || (window as any).lastUploadedCoverImage || '';
-  console.log("Vérification de l'image de couverture:", {
-    uploadedImageUrl,
-    windowImageUrl: (window as any).lastUploadedCoverImage,
-    finalImageUrl,
-    previewUrl
-  });
+  let finalImageUrl = uploadedImageUrl || window.lastUploadedCoverImage || '';
 
   // Si nous avons une prévisualisation mais pas d'URL finale, c'est que l'upload est peut-être en cours
   // Attendre un peu et réessayer
@@ -359,12 +357,7 @@ const handleSubmit = async () => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     // Vérifier à nouveau après le délai
-    finalImageUrl = uploadedImageUrl || (window as any).lastUploadedCoverImage || '';
-    console.log("Nouvelle vérification après délai:", {
-      uploadedImageUrl,
-      windowImageUrl: (window as any).lastUploadedCoverImage,
-      finalImageUrl
-    });
+    finalImageUrl = uploadedImageUrl || window.lastUploadedCoverImage || '';
   }
 
   // Réactiver le bouton de soumission
@@ -380,36 +373,19 @@ const handleSubmit = async () => {
   }
 
   try {
-    setError(''); // Réinitialiser les erreurs précédentes
-    console.log("Début de l'upload des images annexes...");
+    setError('');
     newUploadedUrls = await uploadAnnexImages();
-    console.log("Images annexes uploadées avec succès:", newUploadedUrls);
   } catch (err) {
-    console.error("Erreur lors de l'upload des images annexes:", err);
     setError('Erreur lors de la sauvegarde des images annexes. Veuillez réessayer.');
     return;
   }
 
-  // Approche complètement révisée pour la gestion des images annexes
-  // Nous allons utiliser directement le résultat de uploadAnnexImages qui contient déjà
-  // les bonnes URLs (existantes conservées + nouvelles uploadées) avec les null pour les suppressions
-  
-  console.log("Résultat de l'upload des images annexes:", newUploadedUrls);
-  
   // Filtrer les valeurs null pour le payload final
   let finalImagesAnnexes: string[] = [];
   
   // Combiner les URLs existantes et les nouvelles URLs
   if (editingPost && editingPost.imagesannexes) {
-    console.log("Mode édition - Images originales:", editingPost.imagesannexes);
-    console.log("Images actuelles dans l'interface après modifications:", imagesannexesUrls);
-    console.log("Nouvelles images uploadées:", newUploadedUrls);
-    
-    // Nous utilisons newUploadedUrls qui contient déjà les bonnes URLs
-    // et qui a géré les suppressions (null)
     finalImagesAnnexes = newUploadedUrls.filter(url => url !== null) as string[];
-    
-    console.log("Images annexes finales après filtrage des null:", finalImagesAnnexes);
   } else {
     // En mode création, simplement filtrer les null
     finalImagesAnnexes = newUploadedUrls.filter(url => url !== null) as string[];
@@ -420,10 +396,6 @@ const handleSubmit = async () => {
     );
   }
   
-  console.log("Images annexes finales à envoyer:", finalImagesAnnexes);
-  
-  console.log("URLs finales des images annexes:", finalImagesAnnexes);
-
   const fileInput = document.getElementById('blog-image') as HTMLInputElement | null;
   if (fileInput) {
     fileInput.value = '';
@@ -442,25 +414,15 @@ const handleSubmit = async () => {
     date: new Date().toISOString(),
   };
 
-  console.log("URL image uploadée :", finalImage);
-  console.log("Payload envoyé :", payload);
-
   try {
     if (editingPost) {
-      console.log("Envoi de la mise à jour avec payload:", payload);
       await updateBlogPost(editingPost.id, payload);
-      console.log("✅ Article mis à jour avec succès:", payload.title);
-      
-      // Forcer la réinitialisation complète pour quitter le mode édition
       setEditingPost(null);
     } else {
       await addBlogPost(payload);
-      console.log("✅ Nouvel article créé avec succès:", payload.title);
     }
-    
-    // Explicitement récupérer les articles mis à jour depuis la base de données
+
     await fetchBlogPosts();
-    console.log("📋 Liste des articles rafraîchie");
     
     // reset après succès
     setTitle('');
@@ -469,7 +431,7 @@ const handleSubmit = async () => {
     setPreviewUrl('');
     setUploadedImageUrl('');
     // Nettoyer aussi la variable globale sur window
-    (window as any).lastUploadedCoverImage = '';
+    window.lastUploadedCoverImage = '';
     setImagesannexesFiles([null, null, null]);
     
     // Réinitialise les inputs annexes pour éviter l'affichage persistant des noms
@@ -549,9 +511,6 @@ if (post.image) {
 
     window.scrollTo(0, 0);
   };
-
-console.log("Posts en state :", posts);
-
 
   return (
     <div className="space-y-6 pb-16">
@@ -647,14 +606,12 @@ className={`w-full ${imagesannexesUrls[index] ? 'text-transparent' : ''}`}
         />
         <button
           onClick={() => {
-            console.log(`Suppression de l'image annexe ${index+1}`);
             const newFiles = [...imagesannexesFiles];
             newFiles[index] = null;
             setImagesannexesFiles(newFiles);
             const newUrls = [...imagesannexesUrls];
             newUrls[index] = null;
             setImagesannexesUrls(newUrls);
-            console.log('Images annexes après suppression:', newUrls);
             const input = document.getElementById(`annex-image-${index}`) as HTMLInputElement | null;
             if (input) input.value = '';
           }}

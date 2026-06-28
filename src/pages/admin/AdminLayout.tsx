@@ -145,8 +145,8 @@ const AdminLayout: React.FC = () => {
               <span className="ml-2 hidden sm:inline">Voir le site</span>
             </Link>
             <button
-              onClick={() => {
-                logout();
+              onClick={async () => {
+                await logout();
                 navigate('/');
               }}
               className="text-error-600 hover:text-error-700 flex items-center"

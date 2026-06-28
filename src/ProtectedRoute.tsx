@@ -5,8 +5,6 @@ import { useAuth } from './context/AuthContext';
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, loading } = useAuth();
 
-  console.log('ProtectedRoute - user:', user, 'loading:', loading);
-
   if (loading) {
     return <div>Chargement...</div>;
   }

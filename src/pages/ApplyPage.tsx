@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { useNotifications } from '../context/NotificationsContext';
 import SEO from '../components/SEO';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const ApplyPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -25,6 +26,7 @@ const ApplyPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { updateNonTraitees } = useNotifications();
+  const { ref: pageRef, isVisible: pageVisible } = useScrollReveal();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -187,6 +189,12 @@ const ApplyPage: React.FC = () => {
       />
       <div className="pb-16">
         <div className="container-custom">
+          <div
+            ref={pageRef}
+            className={`transition-all duration-700 ease-out ${
+              pageVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+            }`}
+          >
           <h1 className="font-heading font-bold text-4xl mb-2">Postuler pour un jardin</h1>
           <p className="text-neutral-600 text-lg mb-8">
             Remplissez ce formulaire pour faire une demande d'attribution de parcelle.
@@ -268,6 +276,7 @@ const ApplyPage: React.FC = () => {
             Envoyer la demande
           </button>
             </form>
+          </div>
           </div>
         </div>
       </div>
