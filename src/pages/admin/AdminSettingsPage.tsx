@@ -180,7 +180,7 @@ return (
           {(previewHeaderIcon || localContent.headerIcon) && (
             <div>
               <img
-                src={previewHeaderIcon || localContent.headerIcon || ‘’}
+                src={previewHeaderIcon || localContent.headerIcon}
                 alt="Aperçu header"
                 className="mt-2 h-12 object-contain"
               />
