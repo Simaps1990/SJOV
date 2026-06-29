@@ -179,7 +179,7 @@ useEffect(() => {
 }, [location.pathname]);
 
   return (
-    <div className="pb-16">
+    <div className="pt-8 pb-16">
       <SEO 
         title="Annonces Jardins Familiaux, Jardins Partagés & Jardin Solidaire SJOV Villeurbanne"
         description="Petites annonces de l'association des jardins familiaux, jardins partagés, jardin solidaire et potager collectif SJOV. Jardins collectifs, jardin communal, jardin communautaire, jardins participatifs. Échanges plants, dons graines. Membre FNJFC à Villeurbanne depuis 1936."

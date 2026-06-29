@@ -14,7 +14,7 @@ const EventsPage: React.FC = () => {
   );
 
   return (
-    <div className="pb-16">
+    <div className="pt-8 pb-16">
       <SEO
         title="Événements Jardins Familiaux, Jardins Partagés & Jardin Solidaire SJOV | Jardinons à l'école"
         description="Événements de l'association des jardins familiaux, jardins partagés, jardin solidaire et potager collectif SJOV. Jardins collectifs, jardin communal, jardin communautaire, jardins participatifs. Jardinons à l'école. Membre FNJFC. Ateliers jardinage à Villeurbanne depuis 1936."

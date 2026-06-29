@@ -74,7 +74,7 @@ const { ref: pageRef, isVisible: pageVisible } = useScrollReveal();
   };
 
   return (
-    <div className="pb-16">
+    <div className="pt-8 pb-16">
       <SEO 
         title="Contact SJOV | Société des Jardins Ouvriers de Villeurbanne | Rhône-Alpes"
         description="Contactez la Société des Jardins Ouvriers de Villeurbanne (SJOV), association de bénévoles passionnés depuis 1936, pour toute question sur nos jardins partagés, nos événements de jardinage ou pour postuler à un jardin à Villeurbanne (69100) en région Rhône-Alpes."

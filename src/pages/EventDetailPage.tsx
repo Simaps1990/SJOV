@@ -25,7 +25,7 @@ const [fullscreenIndex, setFullscreenIndex] = useState<number | null>(null);
   }, [id, events, navigate]);
 
 if (!event) return (
-  <div className="pb-16">
+  <div className="pt-8 pb-16">
     <div className="container-custom">
       <p>Chargement de l'événement...</p>
     </div>
@@ -63,7 +63,7 @@ const annexesSansCover = event.imagesannexes?.filter(img => img && img !== event
   };
 
   return (
-    <div className="pb-16">
+    <div className="pt-8 pb-16">
       <SEO
         title={`${event.title} | Événements SJOV | Jardinage à Villeurbanne | Rhône-Alpes`}
         description={getMetaDescription()}

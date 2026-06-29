@@ -26,7 +26,7 @@ const [fullscreenImage, setFullscreenImage] = useState<{ current: string; next?:
 
   if (!post) {
     return (
-      <div className="pb-16">
+      <div className="pt-8 pb-16">
         <div className="container-custom">
           <p>Chargement de l'article...</p>
         </div>
@@ -59,7 +59,7 @@ const [fullscreenImage, setFullscreenImage] = useState<{ current: string; next?:
   };
 
   return (
-    <div className="pb-16">
+    <div className="pt-8 pb-16">
       <SEO
         title={`${post.title} | Blog SJOV | Jardinage à Villeurbanne | Rhône-Alpes`}
         description={getMetaDescription()}

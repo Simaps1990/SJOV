@@ -190,7 +190,7 @@ const GardenScrollDecor: React.FC = () => {
           <div
             key={id}
             aria-hidden="true"
-            className="fixed pointer-events-none select-none hidden md:block"
+            className="fixed pointer-events-none select-none"
             style={{
               top:        `calc(${centerVh}vh + ${yOffset}px)`,
               left:       `${xPct}%`,

@@ -15,7 +15,7 @@ const BlogPage: React.FC = () => {
   );
 
   return (
-    <div className="pb-16">
+    <div className="pt-8 pb-16">
       <SEO
         title="Blog Jardins Familiaux, Jardins Partagés & Jardin Solidaire SJOV | Jardinons à l'école"
         description="Blog de l'association des jardins familiaux, jardins partagés, jardin solidaire et potager collectif SJOV. Jardinons à l'école, jardiner à Paris. Conseils jardins collectifs, jardin communal, jardin communautaire, jardins participatifs. Membre FNJFC depuis 1936."

@@ -168,7 +168,7 @@ const ApplyPage: React.FC = () => {
           description="Demande jardins familiaux, jardins partagés, jardin solidaire et potager collectif à Villeurbanne. Association SJOV. Jardin familial, jardin communal, jardins collectifs, jardin communautaire, jardins participatifs. Membre FNJFC depuis 1936."
           keywords="demande jardins familiaux, jardins familiaux, jardin familiaux, les jardins familiaux, association jardins, association des jardins familiaux, jardin ouvrier, jardin familial, fnjfc, jardinons a l'ecole, jardiner a paris, jardin communal, mon jardins, jardin partagé autour de moi, jardins collectifs, jardins ouvriers, gmap, jardin solidaire, jardin partagé, jardins partages, jardin communale, potager collectif, jardin collectif, les jardins partagés, jardin communautaire, jardin en partage, jardin commun, législation jardins partagés, jardin locatif, jardins participatifs, postuler jardin, demande jardin partagé, SJOV, Villeurbanne, 69100, parcelle jardinage, candidature jardin, Rhône-Alpes, Lyon, bénévolat, demande adhésion, formulaire candidature, obtenir parcelle"
         />
-        <div className="pb-16">
+        <div className="pt-8 pb-16">
           <div className="container-custom">
             <div className="p-6 bg-white shadow-md rounded-lg">
               <h1 className="text-2xl font-semibold text-green-800 mb-4">Demande envoyée</h1>
@@ -187,7 +187,7 @@ const ApplyPage: React.FC = () => {
         description="Demande jardins familiaux, jardins partagés, jardin solidaire et potager collectif à Villeurbanne. Association SJOV. Jardin familial, jardin communal, jardins collectifs, jardin communautaire, jardins participatifs. Membre FNJFC depuis 1936."
         keywords="demande jardins familiaux, jardins familiaux, jardin familiaux, les jardins familiaux, association jardins, association des jardins familiaux, jardin ouvrier, jardin familial, fnjfc, jardinons a l'ecole, jardiner a paris, jardin communal, mon jardins, jardin partagé autour de moi, jardins collectifs, jardins ouvriers, gmap, jardin solidaire, jardin partagé, jardins partages, jardin communale, potager collectif, jardin collectif, les jardins partagés, jardin communautaire, jardin en partage, jardin commun, législation jardins partagés, jardin locatif, jardins participatifs, postuler jardin Villeurbanne, SJOV, 69100, parcelle jardinage, candidature jardin, Rhône-Alpes, Lyon, bénévolat"
       />
-      <div className="pb-16">
+      <div className="pt-8 pb-16">
         <div className="container-custom">
           <div
             ref={pageRef}

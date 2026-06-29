@@ -83,8 +83,11 @@ const HomePage: React.FC = () => {
       </script>
 
       {/* Hero Section */}
-      <section className="relative h-[70vh] flex items-center overflow-hidden">
-        {/* Video Background */}
+      <section
+        className="relative h-[70vh] flex items-center overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: 'url(/images/hero-bg.png)' }}
+      >
+        {/* Video Background - Overlays the image when loaded */}
         <video
           autoPlay
           muted
@@ -93,14 +96,6 @@ const HomePage: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source src="/videos/hero.mp4" type="video/mp4" />
-          {/* Fallback: Image if video doesn't load */}
-          {backgroundImageUrl && (
-            <img
-              src={backgroundImageUrl}
-              alt="Hero background"
-              className="w-full h-full object-cover"
-            />
-          )}
         </video>
 
         {/* Overlay */}
@@ -109,19 +104,12 @@ const HomePage: React.FC = () => {
         {/* Content */}
         <div className="container-custom relative z-10 text-white">
             <div className="max-w-6xl mt-6 md:mt-24">
-              {titreAccueil ? (
+              {titreAccueil && (
                 <h1
                   className="text-4xl md:text-5xl font-bold mb-4 animate-fade-up"
                   style={{ animationDelay: '0ms' }}
                 >
                   {titreAccueil}
-                </h1>
-              ) : (
-                <h1
-                  className="text-4xl md:text-5xl font-bold mb-4 animate-fade-up"
-                  style={{ animationDelay: '0ms' }}
-                >
-                  Jardins Partagés à Villeurbanne et Vaulx-en-Velin - Association de Bénévoles
                 </h1>
               )}
               {texteIntro && (

@@ -10,7 +10,6 @@ const [associationImageUploadedUrls, setAssociationImageUploadedUrls] = useState
 const [associationImagePreviews, setAssociationImagePreviews] = useState<(string | null)[]>([null, null, null]);
 
 const [successMessage, setSuccessMessage] = useState<string | null>(null);
-const [previewAccueil, setPreviewAccueil] = useState<string | null>(null);
 const [previewHeaderIcon, setPreviewHeaderIcon] = useState<string | null>(null);
 //const [parcellesOccupees, setParcellesOccupees] = useState<number>(associationContent.parcellesOccupees || 0);
 //const [parcellesTotales, setParcellesTotales] = useState<number>(associationContent.parcellesTotal || 0);
@@ -30,7 +29,6 @@ const updated = {
   texteFooter: localContent.texteFooter || '',
   titreAssociation: localContent.titreAssociation || '',
   contentAssociation,
-  imageAccueil: previewAccueil ?? localContent.imageAccueil,
   headerIcon: previewHeaderIcon ?? localContent.headerIcon,
   adresse,
   telephone,
@@ -108,25 +106,6 @@ const handleAssociationImageChange = async (e: React.ChangeEvent<HTMLInputElemen
 };
 
 
-const saveImage = async () => {
-  if (!previewAccueil) {
-    setSuccessMessage("Aucune image d’accueil à enregistrer.");
-    return;
-  }
-
-  const updated = {
-    id: associationContent.id,
-    imageAccueil: previewAccueil,
-  };
-
-  const refreshed = await updateAssociationContent(updated);
-if (refreshed !== undefined) {    setLocalContent(refreshed);
-    setSuccessMessage("Image d’accueil enregistrée.");
-  }
-};
-
-
-
 const saveHeaderIcon = async () => {
   if (!previewHeaderIcon) {
     setSuccessMessage("Aucune icône à enregistrer.");
@@ -172,7 +151,6 @@ useEffect(() => {
     });
 
 setAssociationImagePreviews(associationContent.imagesAssociation || [null, null, null]);
-    setPreviewAccueil(associationContent.imageAccueil || null);
     setPreviewHeaderIcon(associationContent.headerIcon ?? null);
     setAdresse(associationContent.adresse || '');
     setTelephone(associationContent.telephone || '');
@@ -195,22 +173,7 @@ return (
     <h1 className="text-3xl font-bold text-gray-800">Paramètres</h1>
 
     <div className="bg-white p-6 rounded-lg shadow space-y-6">
-        <h2 className="text-xl font-semibold text-gray-800">Page d’accueil - Image</h2>
-        <div>
-          <label className="block font-medium mb-1">Image d’accueil</label>
-          <input type="file" accept="image/*" onChange={(e) => handleBase64Image(e, setPreviewAccueil)} />
-          {previewAccueil && (
-            <div>
-              <img src={previewAccueil} alt="Aperçu" className="mt-2 h-48 rounded object-contain" />
-              <button
-                onClick={saveImage}
-                className="mt-3 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
-              >
-                Enregistrer l'image d'accueil
-              </button>
-            </div>
-          )}
-        </div>
+        <h2 className="text-xl font-semibold text-gray-800">Icône du site</h2>
         <div>
           <label className="block font-medium mb-1">Icône du header (logo site admin)</label>
           <input type="file" accept="image/*" onChange={(e) => handleBase64Image(e, setPreviewHeaderIcon)} />
