@@ -42,7 +42,7 @@ if (!titreAssociation && !contentAssociation && images.length === 0) {
   const { ref: imagesRef, isVisible: imagesVisible } = useScrollReveal();
 
   return (
-    <div className="pb-16">
+    <div className="pt-8 pb-16">
       <SEO 
         title="Association des Jardins Familiaux, Jardins Partagés & Jardin Solidaire Villeurbanne | SJOV"
         description="Association des jardins familiaux, jardins partagés, jardin solidaire et potager collectif à Villeurbanne depuis 1936. Jardin communal, jardins collectifs, jardin communautaire, jardins participatifs. Membre FNJFC. Demande jardins familiaux, jardinons à l'école."

@@ -129,7 +129,7 @@ if (refreshed !== undefined) {    setLocalContent(refreshed);
 
 useEffect(() => {
   if (
-    associationContent &&
+    associationContent?.id &&
     !hasInitializedContent.current
   ) {
     setLocalContent({
@@ -177,15 +177,21 @@ return (
         <div>
           <label className="block font-medium mb-1">Icône du header (logo site admin)</label>
           <input type="file" accept="image/*" onChange={(e) => handleBase64Image(e, setPreviewHeaderIcon)} />
-          {previewHeaderIcon && (
+          {(previewHeaderIcon || localContent.headerIcon) && (
             <div>
-              <img src={previewHeaderIcon} alt="Aperçu header" className="mt-2 h-12 object-contain" />
-              <button
-                onClick={saveHeaderIcon}
-                className="mt-3 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
-              >
-                Enregistrer l’icône
-              </button>
+              <img
+                src={previewHeaderIcon || localContent.headerIcon || ‘’}
+                alt="Aperçu header"
+                className="mt-2 h-12 object-contain"
+              />
+              {previewHeaderIcon && (
+                <button
+                  onClick={saveHeaderIcon}
+                  className="mt-3 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
+                >
+                  Enregistrer l’icône
+                </button>
+              )}
             </div>
           )}
         </div>

@@ -296,7 +296,7 @@ const HomePage: React.FC = () => {
       {/* Call to Action */}
       <div
         ref={ctaRef}
-        className={`relative z-[20] transition-all duration-700 ease-out ${
+        className={`relative transition-all duration-700 ease-out ${
           ctaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
         }`}
       >
