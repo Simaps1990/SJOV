@@ -213,8 +213,8 @@ const sortedEvents = [...events].sort((a, b) => {
       <div className="bg-white rounded-lg shadow p-6 space-y-4">
         {error && <p className="text-red-600 font-medium">{error}</p>}
 
-        <input type="text" placeholder="Titre" className="w-full border px-3 py-2 rounded" value={title} onChange={(e) => setTitle(e.target.value)} />
-        <input type="text" placeholder="Lieu" className="w-full border px-3 py-2 rounded" value={location} onChange={(e) => setLocation(e.target.value)} />
+        <input type="text" placeholder="Titre" className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <input type="text" placeholder="Lieu" className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors" value={location} onChange={(e) => setLocation(e.target.value)} />
 
 
         <div className="flex gap-4">
@@ -225,7 +225,7 @@ const sortedEvents = [...events].sort((a, b) => {
   value={start}
   onChange={(e) => setStart(e.target.value)}
   onFocus={(e) => e.currentTarget.showPicker?.()}
-  className="w-full border px-3 py-2 rounded"
+  className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
 />
           </div>
           <div className="flex-1">
@@ -235,7 +235,7 @@ const sortedEvents = [...events].sort((a, b) => {
   value={enddate}
   onChange={(e) => setEnddate(e.target.value)}
   onFocus={(e) => e.currentTarget.showPicker?.()}
-  className="w-full border px-3 py-2 rounded"
+  className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
 />
           </div>
         </div>
@@ -292,7 +292,7 @@ const sortedEvents = [...events].sort((a, b) => {
           const coverInput = document.getElementById('event-cover') as HTMLInputElement | null;
           if (coverInput) coverInput.value = '';
         }}
-        className="text-red-600 text-sm hover:underline mt-2"
+        className="text-red-600 text-sm font-medium hover:text-red-700 transition-colors mt-2"
       >
         Supprimer l’image
       </button>
@@ -352,11 +352,11 @@ const sortedEvents = [...events].sort((a, b) => {
 
 
         <div className="flex gap-4 pt-2">
-          <button onClick={handleAddEvent} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+          <button onClick={handleAddEvent} className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors">
             {editingEventId ? 'Mettre à jour' : 'Publier'}
           </button>
           {editingEventId && (
-            <button onClick={handleCancelEdit} className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
+            <button onClick={handleCancelEdit} className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-md hover:bg-neutral-300 transition-colors">
               Annuler
             </button>
           )}
@@ -423,7 +423,7 @@ setImagesannexesUrls([
 
                     window.scrollTo(0, 0);
                   }}
-                  className="text-blue-600 text-sm hover:underline"
+                  className="text-primary-600 text-sm font-medium hover:text-primary-700 transition-colors"
                 >
                   Modifier
                 </button>
@@ -432,7 +432,7 @@ setImagesannexesUrls([
                     setEventToDelete(e);
                     setShowConfirm(true);
                   }}
-                  className="text-red-600 text-sm hover:underline"
+                  className="text-red-600 text-sm font-medium hover:text-red-700 transition-colors"
                 >
                   Supprimer
                 </button>
@@ -491,7 +491,7 @@ if (error) {
             setEventToDelete(null);
             setShowConfirm(false);
           }}
-          className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+          className="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-md hover:bg-neutral-300 transition-colors"
         >
           Annuler
         </button>

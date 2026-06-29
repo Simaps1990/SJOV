@@ -191,7 +191,7 @@ const archiveApplication = async (demande: Demande) => {
                   {demande.processed && (
                     <button
                       onClick={() => archiveApplication(demande)}
-                      className="text-orange-600 hover:underline font-semibold"
+                      className="text-orange-600 font-semibold hover:text-orange-700 transition-colors"
                     >
                       Archiver la demande
                     </button>
@@ -199,14 +199,14 @@ const archiveApplication = async (demande: Demande) => {
 
                   <button
                     onClick={() => telecharger(demande)}
-                    className="text-green-700 hover:underline"
+                    className="text-green-700 font-medium hover:text-green-800 transition-colors"
                   >
                     Télécharger
                   </button>
 
                   <button
                     onClick={() => envoyerEmail(demande)}
-                    className="text-blue-600 hover:underline"
+                    className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
                   >
                     Envoyer par email
                   </button>
@@ -216,7 +216,7 @@ const archiveApplication = async (demande: Demande) => {
     setDemandeASupprimer(demande);
     setShowConfirmModal(true);
   }}
-  className="text-red-600 hover:underline"
+  className="text-red-600 font-medium hover:text-red-700 transition-colors"
 >
   Supprimer
 </button>
@@ -278,14 +278,14 @@ const archiveApplication = async (demande: Demande) => {
                   <div className="flex flex-wrap gap-4 text-sm">
                     <button
                       onClick={() => telecharger(demande)}
-                      className="text-gray-600 hover:underline"
+                      className="text-neutral-600 font-medium hover:text-neutral-800 transition-colors"
                     >
                       Télécharger
                     </button>
 
                     <button
                       onClick={() => envoyerEmail(demande)}
-                      className="text-gray-600 hover:underline"
+                      className="text-neutral-600 font-medium hover:text-neutral-800 transition-colors"
                     >
                       Envoyer par email
                     </button>
@@ -295,7 +295,7 @@ const archiveApplication = async (demande: Demande) => {
                         setDemandeASupprimer(demande);
                         setShowConfirmModal(true);
                       }}
-                      className="text-red-600 hover:underline"
+                      className="text-red-600 font-medium hover:text-red-700 transition-colors"
                     >
                       Supprimer
                     </button>
@@ -346,7 +346,7 @@ const archiveApplication = async (demande: Demande) => {
             setShowConfirmModal(false);
             setDemandeASupprimer(null);
           }}
-          className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+          className="px-4 py-2 bg-neutral-200 text-neutral-800 rounded-md hover:bg-neutral-300 transition-colors"
         >
           Annuler
         </button>

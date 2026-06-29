@@ -204,7 +204,7 @@ return (
               <img src={previewAccueil} alt="Aperçu" className="mt-2 h-48 rounded object-contain" />
               <button
                 onClick={saveImage}
-                className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="mt-3 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
               >
                 Enregistrer l'image d'accueil
               </button>
@@ -219,7 +219,7 @@ return (
               <img src={previewHeaderIcon} alt="Aperçu header" className="mt-2 h-12 object-contain" />
               <button
                 onClick={saveHeaderIcon}
-                className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="mt-3 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
               >
                 Enregistrer l’icône
               </button>
@@ -262,7 +262,7 @@ onChange={(e) => setLocalContent(prev => ({ ...prev, texteFooter: e.target.value
         </div>
 <button
  onClick={saveAssociationContent}
-   className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+   className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
 >
   Enregistrer les textes
 </button>
@@ -279,7 +279,7 @@ onChange={(e) => setLocalContent(prev => ({ ...prev, texteFooter: e.target.value
 
 <input
   type="text"
-  className="w-full border px-3 py-2 rounded"
+  className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
   value={localContent.titreAssociation ?? ''}
   onChange={(e) => setLocalContent(prev => ({ ...prev, titreAssociation: e.target.value }))}
 />
@@ -328,7 +328,7 @@ onChange={(e) => setLocalContent(prev => ({ ...prev, texteFooter: e.target.value
               setAssociationImagePreviews(newPreviews);
               setAssociationImageUploadedUrls(newUploads);
             }}
-            className="text-red-600 text-sm hover:underline mt-2"
+            className="text-red-600 text-sm font-medium hover:text-red-700 transition-colors mt-2"
           >
             Supprimer
           </button>
@@ -343,7 +343,7 @@ onChange={(e) => setLocalContent(prev => ({ ...prev, texteFooter: e.target.value
 
         <button
 onClick={saveAssociationContent}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
         >
           Enregistrer le contenu
         </button>
@@ -357,7 +357,7 @@ onClick={saveAssociationContent}
     <label className="block font-medium mb-1">Adresse</label>
     <input
       type="text"
-      className="w-full border px-3 py-2 rounded"
+      className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
       value={adresse}
       onChange={(e) => setAdresse(e.target.value)}
     />
@@ -367,7 +367,7 @@ onClick={saveAssociationContent}
     <label className="block font-medium mb-1">Téléphone</label>
     <input
       type="text"
-      className="w-full border px-3 py-2 rounded"
+      className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
       value={telephone}
       onChange={(e) => setTelephone(e.target.value)}
     />
@@ -377,7 +377,7 @@ onClick={saveAssociationContent}
     <label className="block font-medium mb-1">Email</label>
     <input
       type="email"
-      className="w-full border px-3 py-2 rounded"
+      className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
       value={email}
       onChange={(e) => setEmail(e.target.value)}
     />
@@ -387,7 +387,7 @@ onClick={saveAssociationContent}
     <label className="block font-medium mb-1">Horaires</label>
     <input
       type="text"
-      className="w-full border px-3 py-2 rounded"
+      className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
       value={horaires}
       onChange={(e) => setHoraires(e.target.value)}
     />
@@ -408,7 +408,7 @@ if (refreshed !== undefined) {    setLocalContent(refreshed);
   }
 }}
 
-  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+  className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
 >
   Enregistrer les informations de contact
 </button>

@@ -44,7 +44,7 @@ const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   useEffect(() => {
     const updatePadding = () => {
       const height = headerRef.current?.offsetHeight || 0;
-      setPaddingTop(height + 16);
+      setPaddingTop(height);
     };
 
     updatePadding();
@@ -55,7 +55,7 @@ const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   return (
     <>
       <Header ref={headerRef} />
-      <main style={{ paddingTop: paddingTop + 24 }}>{children}</main>
+      <main style={{ paddingTop }}>{children}</main>
       <Footer />
     </>
   );

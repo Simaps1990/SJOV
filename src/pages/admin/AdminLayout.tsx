@@ -180,14 +180,14 @@ const AdminLayout: React.FC = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`flex items-center px-4 py-3 rounded-md transition-colors duration-200 ${
+                  className={`flex items-center py-3 rounded-md transition-all duration-150 ${
                     isActive(item.path)
-                      ? 'bg-primary-50 text-primary-700'
-                      : 'text-neutral-700 hover:bg-neutral-100'
+                      ? 'border-l-4 border-primary-600 bg-primary-50 text-primary-700 font-semibold pl-3 pr-4'
+                      : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 px-4'
                   }`}
                 >
-                  <span className="mr-3">{item.icon}</span>
-                  <span className="font-medium">{item.label}</span>
+                  <span className="mr-3 flex-shrink-0">{item.icon}</span>
+                  <span>{item.label}</span>
                 </Link>
               ))}
             </nav>

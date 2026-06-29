@@ -70,9 +70,9 @@ const validerAnnonce = async (id: string) => {
       <h1 className="text-3xl font-bold text-gray-800">Validation des petites annonces</h1>
 
       {loading ? (
-        <p className="text-neutral-500">Chargement...</p>
+        <div className="space-y-3 animate-pulse">{[1,2,3,4].map(i => (<div key={i} className="h-10 bg-neutral-200 rounded-md" />))}</div>
       ) : annonces.length === 0 ? (
-        <p className="text-neutral-500">Aucune annonce trouvée.</p>
+        <p className="text-center text-neutral-400 py-10 italic">Aucune annonce trouvée.</p>
       ) : (
         <div className="space-y-4">
           {annonces.map((annonce) => (
@@ -204,7 +204,7 @@ const validerAnnonce = async (id: string) => {
                 ) : (
                   <button
                     onClick={() => startEdit(annonce)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors"
                   >
                     Modifier
                   </button>

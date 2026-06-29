@@ -128,13 +128,13 @@ useEffect(() => {
       <h1 className="text-3xl font-semibold mb-6">Tableau de bord</h1>
 
       {/* Stats Cards */}
-<div className="grid grid-cols-2 gap-4 mb-8">
+<div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
 
 
 
 <button
   onClick={() => window.location.href = '/admin/blog'}
-  className="w-full bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
+  className="w-full bg-white rounded-lg border border-neutral-100 shadow-sm px-6 py-5 hover:shadow-md hover:bg-neutral-50 transition-all duration-200 text-left"
 >
   <div className="flex flex-col items-start justify-center gap-4">
     <div className="text-base font-medium">Articles</div>
@@ -154,7 +154,7 @@ useEffect(() => {
 
 <button
   onClick={() => window.location.href = '/admin/events'}
-  className="w-full bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
+  className="w-full bg-white rounded-lg border border-neutral-100 shadow-sm px-6 py-5 hover:shadow-md hover:bg-neutral-50 transition-all duration-200 text-left"
 >
   <div className="flex flex-col items-start justify-center gap-4">
     <div className="text-base font-medium">Événements</div>
@@ -173,7 +173,7 @@ useEffect(() => {
 
 <button
   onClick={() => window.location.href = '/admin/applications'}
-  className="w-full bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
+  className="w-full bg-white rounded-lg border border-neutral-100 shadow-sm px-6 py-5 hover:shadow-md hover:bg-neutral-50 transition-all duration-200 text-left"
 >
   <div className="flex flex-col items-start justify-center gap-4">
     <div className="text-base font-medium">Demandes</div>
@@ -192,7 +192,7 @@ useEffect(() => {
 
 <button
   onClick={() => window.location.href = '/admin/annonces'}
-  className="w-full bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left"
+  className="w-full bg-white rounded-lg border border-neutral-100 shadow-sm px-6 py-5 hover:shadow-md hover:bg-neutral-50 transition-all duration-200 text-left"
 >
   <div className="flex flex-col items-start justify-center gap-4">
     <div className="text-base font-medium">Annonces</div>
@@ -208,7 +208,10 @@ useEffect(() => {
 
 
 
-<div className="w-full bg-white rounded-lg shadow-sm px-6 py-5 hover:bg-neutral-50 transition-colors text-left">
+<button
+  onClick={() => window.location.href = '/admin/parcelles'}
+  className="w-full bg-white rounded-lg border border-neutral-100 shadow-sm px-6 py-5 hover:shadow-md hover:bg-neutral-50 transition-all duration-200 text-left"
+>
   <div className="flex flex-col items-start justify-center gap-4">
     <div className="text-base font-medium">Parcelles</div>
     <div className="flex gap-2 items-center ml-1">
@@ -220,7 +223,7 @@ useEffect(() => {
       </div>
     </div>
   </div>
-</div>
+</button>
 
 
 
@@ -253,7 +256,7 @@ useEffect(() => {
               ))}
             </div>
           ) : (
-            <p className="text-neutral-500">Aucun article n'a été créé.</p>
+            <p className="text-center text-neutral-400 py-8 italic">Aucun article n'a été créé.</p>
           )}
 
 
@@ -287,7 +290,7 @@ useEffect(() => {
                 ))}
             </div>
           ) : (
-            <p className="text-neutral-500">Aucun événement à venir n'est prévu.</p>
+            <p className="text-center text-neutral-400 py-8 italic">Aucun événement à venir n'est prévu.</p>
           )}
 
 

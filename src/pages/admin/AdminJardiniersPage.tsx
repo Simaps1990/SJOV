@@ -501,7 +501,7 @@ const AdminJardiniersPage: React.FC = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Nom</label>
             <input
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
               value={nom}
               onChange={(e) => setNom(e.target.value)}
               placeholder="Nom"
@@ -512,7 +512,7 @@ const AdminJardiniersPage: React.FC = () => {
             <label className="block text-sm font-medium text-gray-700">Numéro de parcelle</label>
             <div ref={parcelleDropdownRef} className="relative">
               <input
-                className="w-full border px-3 py-2 rounded pr-10"
+                className="w-full border border-neutral-300 px-3 py-2 rounded-md pr-10 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
                 value={numeroParcelle}
                 onChange={(e) => {
                   setNumeroParcelle(e.target.value);
@@ -557,7 +557,7 @@ const AdminJardiniersPage: React.FC = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Adresse</label>
             <input
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
               value={adresse}
               onChange={(e) => setAdresse(e.target.value)}
               placeholder="Adresse"
@@ -567,7 +567,7 @@ const AdminJardiniersPage: React.FC = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Adresse email</label>
             <input
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="email@example.com"
@@ -577,7 +577,7 @@ const AdminJardiniersPage: React.FC = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Numéro de téléphone</label>
             <input
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
               value={telephone}
               onChange={(e) => setTelephone(e.target.value)}
               placeholder="Téléphone"
@@ -587,7 +587,7 @@ const AdminJardiniersPage: React.FC = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Année de naissance</label>
             <input
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
               value={anneeNaissance}
               onChange={(e) => setAnneeNaissance(e.target.value)}
               placeholder="Ex: 1975"
@@ -597,7 +597,7 @@ const AdminJardiniersPage: React.FC = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Ancienneté</label>
             <input
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
               value={anciennete}
               onChange={(e) => setAnciennete(e.target.value)}
               placeholder="Ex: 5"
@@ -607,7 +607,7 @@ const AdminJardiniersPage: React.FC = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Statut</label>
             <select
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
               value={statut}
               onChange={(e) => setStatut(e.target.value as '' | 'actif' | 'retraite')}
             >
@@ -619,12 +619,12 @@ const AdminJardiniersPage: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap gap-3 pt-2">
-          <button onClick={handleSave} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          <button onClick={handleSave} className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors">
             {editingId ? 'Mettre à jour' : 'Ajouter'}
           </button>
 
           {editingId && (
-            <button onClick={resetForm} className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
+            <button onClick={resetForm} className="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-md hover:bg-neutral-300 transition-colors">
               Annuler
             </button>
           )}
@@ -635,9 +635,9 @@ const AdminJardiniersPage: React.FC = () => {
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Liste des jardiniers</h2>
 
         {loading ? (
-          <p className="text-neutral-500">Chargement...</p>
+          <div className="space-y-3 animate-pulse">{[1,2,3,4].map(i => (<div key={i} className="h-10 bg-neutral-200 rounded-md" />))}</div>
         ) : sortedJardiniers.length === 0 ? (
-          <p className="text-neutral-500">Aucun jardinier enregistré.</p>
+          <p className="text-center text-neutral-400 py-10 italic">Aucun jardinier enregistré.</p>
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
@@ -832,7 +832,7 @@ const AdminJardiniersPage: React.FC = () => {
                       {jardinier.email ? (
                         <button
                           type="button"
-                          className="text-blue-700 hover:underline"
+                          className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
                           onClick={() => confirmAndTriggerContact('email', jardinier.email as string, jardinier.nom)}
                         >
                           {jardinier.email}
@@ -845,7 +845,7 @@ const AdminJardiniersPage: React.FC = () => {
                       {jardinier.telephone ? (
                         <button
                           type="button"
-                          className="text-blue-700 hover:underline"
+                          className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
                           onClick={() => confirmAndTriggerContact('tel', jardinier.telephone as string, jardinier.nom)}
                         >
                           {jardinier.telephone}
@@ -936,7 +936,7 @@ const AdminJardiniersPage: React.FC = () => {
                   }
                   setConfirmContact(null);
                 }}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
               >
                 Confirmer
               </button>

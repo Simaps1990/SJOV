@@ -8,6 +8,7 @@ import MeteoConseilsSection from '../components/ui/MeteoConseilsSection';
 import { renderAnnonceType } from '../constants/annonceTypes';
 import SEO from '../components/SEO';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import GardenScrollDecor from '../components/ui/GardenScrollDecor';
 
 const HomePage: React.FC = () => {
   const { blogPosts, events, associationContent, annonces } = useContent();
@@ -49,6 +50,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div>
+      <GardenScrollDecor />
       <SEO
         title="Association des Jardins Familiaux, Jardins Partagés & Jardin Solidaire Villeurbanne | SJOV"
         description="Association des jardins familiaux, jardins partagés, jardin solidaire et potager collectif à Villeurbanne (69100). Demande jardins familiaux, jardin communal, jardins collectifs, jardin communautaire, jardins participatifs. Membre FNJFC. Jardinons à l'école, jardiner à Paris depuis 1936."
@@ -81,13 +83,31 @@ const HomePage: React.FC = () => {
       </script>
 
       {/* Hero Section */}
-      {backgroundImageUrl && (
-        <section
-          className="relative bg-cover bg-center h-[70vh] flex items-center -mt-10 md:-mt-24"
-          style={{ backgroundImage: `url(${backgroundImageUrl})` }}
+      <section className="relative h-[70vh] flex items-center overflow-hidden">
+        {/* Video Background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
         >
-          <div className="absolute inset-0 bg-black bg-opacity-40" />
-          <div className="container-custom relative z-10 text-white">
+          <source src="/videos/hero.mp4" type="video/mp4" />
+          {/* Fallback: Image if video doesn't load */}
+          {backgroundImageUrl && (
+            <img
+              src={backgroundImageUrl}
+              alt="Hero background"
+              className="w-full h-full object-cover"
+            />
+          )}
+        </video>
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black bg-opacity-40" />
+
+        {/* Content */}
+        <div className="container-custom relative z-10 text-white">
             <div className="max-w-6xl mt-6 md:mt-24">
               {titreAccueil ? (
                 <h1
@@ -126,16 +146,15 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </section>
-      )}
 
       {/* Section Météo + Plantation */}
       <div
         ref={meteoRef}
-        className={`transition-all duration-700 ease-out ${
+        className={`relative z-[20] transition-all duration-700 ease-out ${
           meteoVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
         }`}
       >
-        <section className="pt-16 pb-4 px-4 md:px-6 bg-neutral-50">
+        <section className="pt-16 pb-4 px-4 md:px-6">
           <MeteoConseilsSection />
         </section>
       </div>
@@ -143,11 +162,11 @@ const HomePage: React.FC = () => {
       {/* Latest Blog Post */}
       <div
         ref={blogRef}
-        className={`transition-all duration-700 ease-out ${
+        className={`relative z-[20] transition-all duration-700 ease-out ${
           blogVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
         }`}
       >
-        <section className="pt-16 pb-8 px-4 md:px-6 bg-neutral-50">
+        <section className="pt-16 pb-8 px-4 md:px-6">
           <div className="container-custom">
             <div className="flex justify-between items-center mb-3">
               <Link to="/blog" className="text-3xl font-heading font-bold no-underline hover:no-underline">
@@ -173,11 +192,11 @@ const HomePage: React.FC = () => {
       {/* Events Section */}
       <div
         ref={eventsRef}
-        className={`transition-all duration-700 ease-out ${
+        className={`relative z-[20] transition-all duration-700 ease-out ${
           eventsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
         }`}
       >
-        <section className="pt-16 pb-8 px-4 md:px-6 bg-neutral-50">
+        <section className="pt-16 pb-8 px-4 md:px-6">
           <div className="container-custom">
             <div className="flex justify-between items-center">
               <Link to="/events" className="text-3xl font-heading font-bold">
@@ -226,11 +245,11 @@ const HomePage: React.FC = () => {
       {/* Dernières annonces */}
       <div
         ref={annoncesRef}
-        className={`transition-all duration-700 ease-out ${
+        className={`relative z-[20] transition-all duration-700 ease-out ${
           annoncesVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
         }`}
       >
-        <section className="pt-16 pb-16 px-4 md:px-6 bg-neutral-50">
+        <section className="pt-16 pb-16 px-4 md:px-6">
           <div className="container-custom">
             <div className="flex justify-between items-center">
               <Link to="/annonces" className="text-3xl font-heading font-bold mb-6">
@@ -254,7 +273,7 @@ const HomePage: React.FC = () => {
                     <button
                       key={a.id}
                       onClick={() => (window.location.href = `/annonces#annonce-${a.id}`)}
-                      className={`text-left w-full bg-white p-6 rounded-lg shadow transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${
+                      className={`text-left w-full bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow transition-all duration-300 hover:-translate-y-1 hover:shadow-md ${
                         annoncesVisible ? 'animate-fade-up' : 'opacity-0'
                       }`}
                       style={{ animationDelay: `${index * 100}ms` }}
@@ -289,7 +308,7 @@ const HomePage: React.FC = () => {
       {/* Call to Action */}
       <div
         ref={ctaRef}
-        className={`transition-all duration-700 ease-out ${
+        className={`relative z-[20] transition-all duration-700 ease-out ${
           ctaVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
         }`}
       >

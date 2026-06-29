@@ -13,7 +13,7 @@ const EventCard: React.FC<EventCardProps> = ({ event, isFeature = false }) => {
   return (
 <Link
   to={`/events/${event.id}`}
-  className={`card group transition-all duration-300 block hover:-translate-y-1 hover:shadow-lg ${event.isPast ? 'opacity-80' : ''}`}
+  className={`card group transition-all duration-300 block hover:-translate-y-1 hover:shadow-lg bg-white/80 backdrop-blur-sm`}
 >
       <div className="relative overflow-hidden h-48 rounded-t-lg">
         <img

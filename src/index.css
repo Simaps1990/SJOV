@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Garden scroll decoration animations */
+@keyframes gardenFly {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes gardenFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(calc(-1 * var(--float-amp, 6px))); }
+}
+
+@keyframes beeWingBeat {
+  0% { transform: scaleY(1) rotate(-12deg); }
+  50% { transform: scaleY(0.12) rotate(12deg); }
+  100% { transform: scaleY(1) rotate(-12deg); }
+}
+
+@keyframes butterflyWing {
+  0%, 100% { transform: scaleX(1); }
+  50%       { transform: scaleX(0.05); }
+}
+
+
 @layer base {
   html {
     scroll-behavior: smooth;

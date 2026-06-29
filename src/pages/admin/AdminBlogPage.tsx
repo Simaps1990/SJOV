@@ -526,7 +526,7 @@ if (post.image) {
         <input
           type="text"
           placeholder="Titre de l'article"
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
@@ -566,7 +566,7 @@ if (post.image) {
           const fileInput = document.getElementById('blog-image') as HTMLInputElement | null;
           if (fileInput) fileInput.value = '';
         }}
-        className="text-red-600 text-sm hover:underline mt-2"
+        className="text-red-600 text-sm font-medium hover:text-red-700 transition-colors mt-2"
       >
         Supprimer l’image
       </button>
@@ -660,7 +660,7 @@ className={`w-full ${imagesannexesUrls[index] ? 'text-transparent' : ''}`}
           if (fileInput) fileInput.value = '';
           window.scrollTo(0, 0);
         }}
-        className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+        className="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-md hover:bg-neutral-300 transition-colors"
       >
         Annuler
       </button>
@@ -731,7 +731,7 @@ onClick={async () => {
             setPostToDelete(null);
             setShowConfirm(false);
           }}
-          className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">Annuler</button>
+          className="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-md hover:bg-neutral-300 transition-colors">Annuler</button>
       </div>
     </div>
   </div>
@@ -767,7 +767,7 @@ onClick={async () => {
 <div className="flex gap-4 pt-2">
   <button
     onClick={() => handleEdit(post)}
-    className="text-blue-600 text-sm hover:underline"
+    className="text-primary-600 text-sm font-medium hover:text-primary-700 transition-colors"
   >
     Modifier
   </button>
@@ -777,7 +777,7 @@ onClick={() => {
   setShowConfirm(true);
 }}
 
-    className="text-red-600 text-sm hover:underline"
+    className="text-red-600 text-sm font-medium hover:text-red-700 transition-colors"
   >
     Supprimer
   </button>

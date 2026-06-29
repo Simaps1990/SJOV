@@ -252,7 +252,7 @@ const AdminParcellesPage: React.FC = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Numéro de parcelle</label>
             <input
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
               value={numeroParcelle}
               onChange={(e) => setNumeroParcelle(e.target.value)}
               placeholder="Ex: 12 bis"
@@ -262,7 +262,7 @@ const AdminParcellesPage: React.FC = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Surface (m²)</label>
             <input
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
               value={surfaceM2}
               onChange={(e) => setSurfaceM2(e.target.value)}
               placeholder="Ex: 80"
@@ -272,7 +272,7 @@ const AdminParcellesPage: React.FC = () => {
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700">Secteur</label>
             <select
-              className="w-full border px-3 py-2 rounded"
+              className="w-full border border-neutral-300 px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-400 transition-colors"
               value={secteur}
               onChange={(e) => setSecteur(e.target.value as SecteurParcelle | '')}
             >
@@ -299,12 +299,12 @@ const AdminParcellesPage: React.FC = () => {
         </div>
 
         <div className="flex flex-wrap gap-3 pt-2">
-          <button onClick={handleSave} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+          <button onClick={handleSave} className="bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors">
             {editingId ? 'Mettre à jour' : 'Ajouter'}
           </button>
 
           {editingId && (
-            <button onClick={resetForm} className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400">
+            <button onClick={resetForm} className="bg-neutral-200 text-neutral-800 px-4 py-2 rounded-md hover:bg-neutral-300 transition-colors">
               Annuler
             </button>
           )}
@@ -315,9 +315,9 @@ const AdminParcellesPage: React.FC = () => {
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Liste des parcelles</h2>
 
         {loading ? (
-          <p className="text-neutral-500">Chargement...</p>
+          <div className="space-y-3 animate-pulse">{[1,2,3,4].map(i => (<div key={i} className="h-10 bg-neutral-200 rounded-md" />))}</div>
         ) : sortedParcelles.length === 0 ? (
-          <p className="text-neutral-500">Aucune parcelle enregistrée.</p>
+          <p className="text-center text-neutral-400 py-10 italic">Aucune parcelle enregistrée.</p>
         ) : (
           <>
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">

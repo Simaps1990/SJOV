@@ -112,12 +112,12 @@ const MeteoConseilsSection: React.FC = () => {
   const plantingList = MONTHLY_PLANTING[monthKey] || [];
 
   return (
-<section className="py-0 m-0 bg-neutral-50">
+<section className="py-0 m-0">
       <div className="container-custom">
 <div className="grid md:grid-cols-2 gap-8 mt-0 mb-0">
 
           {/* Plantation */}
-          <div className="bg-white p-6 shadow-md rounded-2xl">
+          <div className="bg-white/80 p-6 shadow-md rounded-2xl backdrop-blur-sm">
             <div className="flex items-center gap-2 mb-4">
               <Carrot className="text-green-600 h-5 w-5" />
               <h2 className="text-xl font-bold leading-tight mb-0">Ce mois-ci on plante</h2>
@@ -146,7 +146,7 @@ const MeteoConseilsSection: React.FC = () => {
           </div>
 
           {/* Météo */}
-          <div className="bg-white p-6 shadow-md rounded-2xl">
+          <div className="bg-white/80 p-6 shadow-md rounded-2xl backdrop-blur-sm">
 <WeatherWidget
   renderTips={({ weatherCode, temperature, city, icon, airQuality, allergyRisks }) => {
     let conseilMeteo = '';
