@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Link2Off, Pencil, Trash2 } from 'lucide-react';
+import { Calendar, Clock, Link2Off, Mail, MapPin, Pencil, Phone, Trash2 } from 'lucide-react';
 import { supabase } from '../../supabaseClient';
 import type { Jardinier, Parcelle, SecteurParcelle } from '../../types';
 
@@ -704,185 +704,149 @@ const AdminJardiniersPage: React.FC = () => {
               />
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="min-w-full text-sm">
+            <table className="min-w-full text-sm border-separate border-spacing-0">
               <thead>
-                <tr className="text-left border-b">
-                  <th className="py-2 pr-2 md:pr-4">
-                    <button
-                      className="font-semibold inline-flex items-center gap-1 leading-none"
-                      onClick={() => toggleSort('nom')}
-                    >
-                      <span className="leading-none">Nom</span>
-                      <span className="w-3 text-[10px] leading-none">{sortIndicator('nom') || ''}</span>
+                <tr className="text-left">
+                  <th className="pb-2 pr-6 text-xs font-semibold text-neutral-500 uppercase tracking-wide border-b border-neutral-200">
+                    <button className="inline-flex items-center gap-1 hover:text-neutral-800 transition-colors" onClick={() => toggleSort('nom')}>
+                      Nom <span className="text-[10px]">{sortIndicator('nom')}</span>
                     </button>
                   </th>
-                  <th className="py-2 pr-2 md:pr-4">
-                    <button
-                      className="font-semibold inline-flex items-center gap-1 leading-none"
-                      onClick={() => toggleSort('numero_parcelle')}
-                    >
-                      <span className="leading-none">Parcelle</span>
-                      <span className="w-3 text-[10px] leading-none">{sortIndicator('numero_parcelle') || ''}</span>
+                  <th className="pb-2 pr-6 text-xs font-semibold text-neutral-500 uppercase tracking-wide border-b border-neutral-200">
+                    <button className="inline-flex items-center gap-1 hover:text-neutral-800 transition-colors" onClick={() => toggleSort('numero_parcelle')}>
+                      Parcelle <span className="text-[10px]">{sortIndicator('numero_parcelle')}</span>
                     </button>
                   </th>
-                  <th className="py-2 pr-2 md:pr-4">
-                    <button
-                      className="font-semibold inline-flex items-center gap-1 leading-none"
-                      onClick={() => toggleSort('anciennete')}
-                    >
-                      <span className="leading-none">Depuis</span>
-                      <span className="w-3 text-[10px] leading-none">{sortIndicator('anciennete') || ''}</span>
+                  <th className="pb-2 pr-6 text-xs font-semibold text-neutral-500 uppercase tracking-wide border-b border-neutral-200">
+                    <button className="inline-flex items-center gap-1 hover:text-neutral-800 transition-colors" onClick={() => toggleSort('statut')}>
+                      Statut <span className="text-[10px]">{sortIndicator('statut')}</span>
                     </button>
                   </th>
-                  <th className="py-2 pr-2 md:pr-4">
-                    <span className="font-semibold inline-flex items-center gap-1 leading-none">
-                      <span className="leading-none">Adresse</span>
-                      <span className="w-3 text-[10px] leading-none" />
-                    </span>
-                  </th>
-                  <th className="py-2 pr-2 md:pr-4">
-                    <button
-                      className="font-semibold inline-flex items-center gap-1 leading-none"
-                      onClick={() => toggleSort('email')}
-                    >
-                      <span className="leading-none">Email</span>
-                      <span className="w-3 text-[10px] leading-none">{sortIndicator('email') || ''}</span>
+                  <th className="pb-2 pr-6 text-xs font-semibold text-neutral-500 uppercase tracking-wide border-b border-neutral-200">
+                    <button className="inline-flex items-center gap-1 hover:text-neutral-800 transition-colors" onClick={() => toggleSort('annee_naissance')}>
+                      Né en <span className="text-[10px]">{sortIndicator('annee_naissance')}</span>
                     </button>
                   </th>
-                  <th className="py-2 pr-2 md:pr-4 min-w-[140px]">
-                    <button
-                      className="font-semibold inline-flex items-center gap-1 leading-none"
-                      onClick={() => toggleSort('telephone')}
-                    >
-                      <span className="leading-none">Téléphone</span>
-                      <span className="w-3 text-[10px] leading-none">{sortIndicator('telephone') || ''}</span>
+                  <th className="pb-2 pr-6 text-xs font-semibold text-neutral-500 uppercase tracking-wide border-b border-neutral-200">
+                    <button className="inline-flex items-center gap-1 hover:text-neutral-800 transition-colors" onClick={() => toggleSort('anciennete')}>
+                      Membre depuis <span className="text-[10px]">{sortIndicator('anciennete')}</span>
                     </button>
                   </th>
-                  <th className="py-2 pr-2 md:pr-4 min-w-[90px]">
-                    <button
-                      className="font-semibold inline-flex items-center gap-1 leading-none"
-                      onClick={() => toggleSort('annee_naissance')}
-                    >
-                      <span className="leading-none">Né en</span>
-                      <span className="w-3 text-[10px] leading-none">{sortIndicator('annee_naissance') || ''}</span>
-                    </button>
-                  </th>
-                  <th className="py-2 pr-2 md:pr-4">
-                    <button
-                      className="font-semibold inline-flex items-center gap-1 leading-none"
-                      onClick={() => toggleSort('statut')}
-                    >
-                      <span className="leading-none">Statut</span>
-                      <span className="w-3 text-[10px] leading-none">{sortIndicator('statut') || ''}</span>
-                    </button>
-                  </th>
-                  <th className="py-2">
-                    <span className="font-semibold inline-flex items-center gap-1 leading-none">
-                      <span className="leading-none">Actions</span>
-                      <span className="w-3 text-[10px] leading-none" />
-                    </span>
-                  </th>
+                  <th className="pb-2 text-xs font-semibold text-neutral-500 uppercase tracking-wide border-b border-neutral-200" />
                 </tr>
               </thead>
               <tbody>
-                {sortedJardiniers.map((jardinier) => (
-                  <tr key={jardinier.id} className="border-b last:border-0">
-                    <td className="py-2 pr-2 md:pr-4 align-top font-medium text-gray-900">{jardinier.nom ?? ''}</td>
-                    <td className="py-2 pr-2 md:pr-4 align-top">
-                      {(() => {
-                        const numero = jardinier.numero_parcelle;
-                        const p = numero !== null && numero !== undefined ? parcelles.find((x) => x.numero_parcelle === numero) : undefined;
-                        const badge = secteurBadge((p?.secteur as SecteurParcelle | null) ?? null);
+                {sortedJardiniers.map((jardinier) => {
+                  const numero = jardinier.numero_parcelle;
+                  const p = numero !== null && numero !== undefined ? parcelles.find((x) => x.numero_parcelle === numero) : undefined;
+                  const badge = secteurBadge((p?.secteur as SecteurParcelle | null) ?? null);
 
-                        return (
-                          <div className="flex flex-col items-start gap-1">
-                            <div className="flex items-start gap-1">
-                              <span>{numero ?? ''}</span>
-                              {numero !== null && numero !== undefined && (
+                  const statutBadge = jardinier.statut === 'actif'
+                    ? <span className="inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold bg-green-100 text-green-700">Actif</span>
+                    : jardinier.statut === 'retraite'
+                    ? <span className="inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold bg-orange-100 text-orange-700">Retraité</span>
+                    : <span className="text-neutral-300 text-xs">—</span>;
+
+                  return (
+                    <React.Fragment key={jardinier.id}>
+                      {/* Ligne principale */}
+                      <tr className="group">
+                        <td className="pt-4 pb-1 pr-6 align-middle">
+                          <span className="font-semibold text-gray-900 text-base">{jardinier.nom ?? <span className="text-neutral-400 font-normal italic">Sans nom</span>}</span>
+                        </td>
+                        <td className="pt-4 pb-1 pr-6 align-middle">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            {numero !== null && numero !== undefined ? (
+                              <>
+                                <span className="font-medium text-gray-800">#{numero}</span>
+                                {badge && (
+                                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${badge.badgeClass}`}>
+                                    {badge.label}
+                                  </span>
+                                )}
                                 <button
                                   type="button"
                                   onClick={() => {
-                                    const ok = window.confirm(
-                                      `Retirer la parcelle ${numero} de ${jardinier.nom ?? 'ce jardinier'} ?`
-                                    );
+                                    const ok = window.confirm(`Retirer la parcelle ${numero} de ${jardinier.nom ?? 'ce jardinier'} ?`);
                                     if (ok) handleUnassignParcelle(jardinier);
                                   }}
-                                  className="text-orange-600 hover:text-orange-800 p-0.5"
+                                  className="text-neutral-300 hover:text-orange-500 transition-colors"
                                   aria-label="Retirer la parcelle"
                                   title="Retirer la parcelle"
                                 >
-                                  <Link2Off size={18} />
+                                  <Link2Off size={13} />
                                 </button>
-                              )}
-                            </div>
-
-                            {badge ? (
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold whitespace-nowrap ${badge.badgeClass}`}>
-                                {badge.label}
-                              </span>
-                            ) : null}
+                              </>
+                            ) : (
+                              <span className="text-neutral-400 text-xs italic">Non attribuée</span>
+                            )}
                           </div>
-                        );
-                      })()}
-                    </td>
-                    <td className="py-2 pr-2 md:pr-4 align-top">{jardinier.anciennete ?? ''}</td>
-                    <td className="py-2 pr-2 md:pr-4 align-top">{jardinier.adresse ?? ''}</td>
-                    <td className="py-2 pr-2 md:pr-4 align-top">
-                      {jardinier.email ? (
-                        <button
-                          type="button"
-                          className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
-                          onClick={() => confirmAndTriggerContact('email', jardinier.email as string, jardinier.nom)}
-                        >
-                          {jardinier.email}
-                        </button>
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                    <td className="py-2 pr-2 md:pr-4 min-w-[140px] align-top">
-                      {jardinier.telephone ? (
-                        <button
-                          type="button"
-                          className="text-primary-600 font-medium hover:text-primary-700 transition-colors"
-                          onClick={() => confirmAndTriggerContact('tel', jardinier.telephone as string, jardinier.nom)}
-                        >
-                          {jardinier.telephone}
-                        </button>
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                    <td className="py-2 pr-2 md:pr-4 min-w-[90px] align-top">{jardinier.annee_naissance ?? ''}</td>
-                    <td className="py-2 pr-2 md:pr-4 align-top">{jardinier.statut ?? ''}</td>
-                    <td className="py-2 align-top">
-                      <div className="flex items-center gap-1 md:gap-4">
-                        <button
-                          type="button"
-                          onClick={() => startEdit(jardinier)}
-                          className="p-1.5 text-blue-600 hover:text-blue-800"
-                          aria-label="Modifier"
-                          title="Modifier"
-                        >
-                          <Pencil size={18} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setConfirmDeleteId(jardinier.id)}
-                          className="p-1.5 text-red-600 hover:text-red-800"
-                          aria-label="Supprimer"
-                          title="Supprimer"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                        </td>
+                        <td className="pt-4 pb-1 pr-6 align-middle">{statutBadge}</td>
+                        <td className="pt-4 pb-1 pr-6 align-middle">
+                          {jardinier.annee_naissance ? (
+                            <span className="inline-flex items-center gap-1 text-xs text-neutral-600">
+                              <Calendar size={11} className="shrink-0 text-neutral-400" />
+                              {jardinier.annee_naissance}
+                            </span>
+                          ) : (
+                            <span className="text-neutral-300 text-xs">—</span>
+                          )}
+                        </td>
+                        <td className="pt-4 pb-1 pr-6 align-middle">
+                          {jardinier.anciennete ? (
+                            <span className="inline-flex items-center gap-1 text-xs text-neutral-600">
+                              <Clock size={11} className="shrink-0 text-neutral-400" />
+                              {jardinier.anciennete}
+                            </span>
+                          ) : (
+                            <span className="text-neutral-300 text-xs">—</span>
+                          )}
+                        </td>
+                        <td className="pt-4 pb-1 align-middle">
+                          <div className="flex items-center gap-0.5 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <button type="button" onClick={() => startEdit(jardinier)} className="p-1.5 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors" aria-label="Modifier" title="Modifier">
+                              <Pencil size={15} />
+                            </button>
+                            <button type="button" onClick={() => setConfirmDeleteId(jardinier.id)} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors" aria-label="Supprimer" title="Supprimer">
+                              <Trash2 size={15} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      {/* Ligne secondaire */}
+                      <tr className="border-b border-neutral-100">
+                        <td colSpan={6} className="pt-1 pb-4">
+                          <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5">
+                            {jardinier.email && (
+                              <button type="button" className="inline-flex items-center gap-1.5 text-sm text-primary-600 hover:text-primary-800 transition-colors" onClick={() => confirmAndTriggerContact('email', jardinier.email as string, jardinier.nom)}>
+                                <Mail size={13} className="shrink-0" />
+                                {jardinier.email}
+                              </button>
+                            )}
+                            {jardinier.telephone && (
+                              <button type="button" className="inline-flex items-center gap-1.5 text-sm text-primary-600 hover:text-primary-800 transition-colors" onClick={() => confirmAndTriggerContact('tel', jardinier.telephone as string, jardinier.nom)}>
+                                <Phone size={13} className="shrink-0" />
+                                {jardinier.telephone}
+                              </button>
+                            )}
+                            {jardinier.adresse && (
+                              <span className="inline-flex items-center gap-1.5 text-sm text-neutral-500">
+                                <MapPin size={13} className="shrink-0 text-neutral-400" />
+                                {jardinier.adresse}
+                              </span>
+                            )}
+                            {!jardinier.email && !jardinier.telephone && !jardinier.adresse && (
+                              <span className="text-sm text-neutral-300 italic">Aucune information complémentaire</span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    </React.Fragment>
+                  );
+                })}
               </tbody>
             </table>
-          </div>
           </>
         )}
       </div>
